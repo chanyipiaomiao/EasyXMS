@@ -14,12 +14,22 @@ class ServerInfo {
     private String password = null;
     private int port = 22;
 
-    ServerInfo(){
 
+    ServerInfo(String server_group, String username,
+               int port, String password) {
+        this.server_group = server_group;
+        this.username = username;
+        this.port = port;
+        this.password = password;
     }
 
-    ServerInfo(String ip) {
+    ServerInfo(String ip, String server_group,
+               String password, String username, int port) {
         this.ip = ip;
+        this.server_group = server_group;
+        this.password = password;
+        this.username = username;
+        this.port = port;
     }
 
     public String getIp() {

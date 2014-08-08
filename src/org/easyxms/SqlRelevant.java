@@ -6,17 +6,17 @@ class SqlRelevant {
     private String driver = "org.sqlite.JDBC";
     private static String db_name = "conf/easyxms.db";
     private String sqlite_jdbc_name = String.format("jdbc:sqlite:%s", db_name);
-    private String query_all_sql = "select * from easyxms";
-    private String query_all_ip_group_sql = "select ip,server_group from easyxms";
-    private String query_specify_ip_group_sql = "select ip,server_group from easyxms where server_group = '%s';";
-    private String query_single_ip_sql = "select * from easyxms where ip = '%s'";
-    private String query_single_group_sql = "select * from easyxms where server_group = '%s'";
-    private String list_groups_sql = "select distinct server_group from easyxms";
-    private String insert_sql = "insert into easyxms (ip,server_group,username,password,port) values('%s','%s','%s','%s',%d)";
-    private String delete_pass_ip = "delete from easyxms where ip = '%s'";
-    private String delete_pass_group = "delete from easyxms where server_group = '%s'";
-    private String clear_table = "delete from easyxms";
-    private String create_table = "create table if not exists easyxms (ip text not null,server_group text not null,username text not null default 'root',password text not null,port integer not null default 22)";
+    private String query_all_sql = "select * from ServerInfo";
+    private String query_all_ip_group_sql = "select ip,server_group from ServerInfo";
+    private String query_specify_ip_group_sql = "select ip,ServerInfo from server_info where server_group = '%s';";
+    private String query_single_ip_sql = "select * from ServerInfo where ip = '%s'";
+    private String query_single_group_sql = "select * from ServerInfo where server_group = '%s'";
+    private String list_groups_sql = "select distinct server_group from ServerInfo";
+    private String insert_sql = "insert into ServerInfo (ip,server_group,username,password,port) values('%s','%s','%s','%s',%d)";
+    private String delete_pass_ip = "delete from ServerInfo where ip = '%s'";
+    private String delete_pass_group = "delete from ServerInfo where server_group = '%s'";
+    private String clear_table = "delete from ServerInfo";
+    private String create_table = "create table if not exists ServerInfo (ip text not null,server_group text not null,username text not null default 'root',password text not null,port integer not null default 22)";
 
     public static void setDb_name(String db_name) {
         SqlRelevant.db_name = db_name;
