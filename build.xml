@@ -1,0 +1,83 @@
+<project default="jar" name="easyxms">
+    <!-- 工程目录结构  
+    project  
+        |-conf
+        |-lib
+        |-logs
+        |-scripts
+        |-src
+        |-build.xml
+    -->  
+    <property name="lib.dir" value="lib"/>  
+    <property name="src.dir" value="src"/>  
+    <property name="classes.dir" value="bin"/>  
+    <property name="output.dir" value="easyxms"/>
+    <property name="scripts.dir" value="scripts"/>
+    <property name="jarname" value="easyxms.jar"/>
+    <property name="mainclass" value="org.easyxms.EasyXMS"/>
+    <property name="orginal.conf.dir" value="conf"/>
+    <property name="orginal.logs.dir" value="logs"/>
+    <property name="logs.dir" location="${output.dir}/${orginal.logs.dir}"/>
+    <property name="conf.dir" location="${output.dir}/${orginal.conf.dir}"/>
+
+  
+    <!-- 第三方jar包的路径 -->  
+    <path id="lib-classpath">  
+        <fileset dir="${lib.dir}">  
+            <include name="**/*.jar"/>  
+        </fileset>  
+    </path>  
+  
+    <!-- 1. 初始化工作，如创建目录等 -->  
+    <target name="init">  
+        <mkdir dir="${classes.dir}"/>  
+        <mkdir dir="${output.dir}"/>
+        <mkdir dir="${logs.dir}"/>
+        <mkdir dir="${conf.dir}"/>
+    </target>
+  
+    <!-- 2. 编译 -->  
+    <target name="compile" depends="init">  
+        <javac srcdir="${src.dir}" destdir="${classes.dir}">  
+            <compilerarg line="-encoding UTF-8"/>  
+            <classpath refid="lib-classpath"/>  
+        </javac>
+        <copy todir="${conf.dir}">
+            <fileset dir="${orginal.conf.dir}" excludes=".svn" />
+        </copy>
+        <copy todir="${output.dir}">
+            <fileset dir="${scripts.dir}" excludes=".svn" />
+        </copy>
+        <copy file="${src.dir}/log4j.properties" todir="${classes.dir}"/>
+        <copy file="${src.dir}/commons-logging.properties" todir="${classes.dir}"/>
+    </target>  
+  
+    <!-- 3. 打包jar文件 -->  
+    <target name="jar" depends="compile">  
+        <copy todir="${output.dir}/lib">  
+            <fileset dir="${lib.dir}"/>  
+        </copy>  
+  
+        <!--Create a property containing all .jar files,  
+        prefix lib/, and seperated with a space-->  
+        <pathconvert property="mf.classpath" pathsep=" ">  
+            <mapper>  
+                <chainedmapper>  
+                    <!-- jar包文件只留文件名，去掉目录信息 -->  
+                    <flattenmapper/>  
+                    <!-- add lib/ prefix -->  
+                    <globmapper from="*" to="lib/*"/>  
+                </chainedmapper>  
+            </mapper>  
+            <path refid="lib-classpath"/>  
+         </pathconvert>  
+  
+        <!-- jar文件的输出路径 -->  
+        <jar destfile="${output.dir}/${jarname}" basedir="${classes.dir}">  
+            <manifest>  
+                <attribute name="Main-class" value="${mainclass}"/>  
+                <attribute name="Class-Path" value="${mf.classpath}"/>  
+            </manifest>  
+        </jar>  
+    </target>  
+</project>  
