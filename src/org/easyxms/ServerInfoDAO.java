@@ -1,6 +1,8 @@
 package org.easyxms;
 
 
+import java.util.ArrayList;
+
 class ServerInfoDAO {
 
     public static void create(){
@@ -11,8 +13,7 @@ class ServerInfoDAO {
     }
 
     public static void insert(String ip,String server_group,String username,String password,int port){
-        String sql = String.format("insert into ServerInfo (ip,server_group,username,password,port) " +
-                        "values('%s','%s','%s','%s',%d)",ip,server_group,username,password,port);
+        String sql = "insert into ServerInfo (ip,server_group,username,password,port) values('?','?','?','?',?)";
     }
 
     public static void selectAllFieldByIP(String ip){
@@ -37,6 +38,8 @@ class ServerInfoDAO {
 
     public static void selectAll(){
         String sql = "select * from ServerInfo";
+        DBManager dbManager = new DBManager();
+        dbManager.query(sql,new ArrayList(),new ServerInfoMapping());
     }
 
     public static void deleteByIP(String ip){

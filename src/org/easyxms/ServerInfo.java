@@ -14,9 +14,12 @@ class ServerInfo {
     private String password = null;
     private int port = 22;
 
+    ServerInfo(){
+
+    }
 
     ServerInfo(String server_group, String username,
-               int port, String password) {
+               String password,int port) {
         this.server_group = server_group;
         this.username = username;
         this.port = port;
@@ -24,7 +27,7 @@ class ServerInfo {
     }
 
     ServerInfo(String ip, String server_group,
-               String password, String username, int port) {
+               String username, String password, int port) {
         this.ip = ip;
         this.server_group = server_group;
         this.password = password;
@@ -71,4 +74,5 @@ class ServerInfo {
     public void setPort(int port) {
         this.port = port;
     }
+
 }
