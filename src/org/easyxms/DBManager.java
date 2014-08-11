@@ -40,9 +40,17 @@ class DBManager {
     }
 
 
-    public List query(String sql,List args,ResultSetToEntityMapping mapping){
+    /**
+     * 用来执行 select 语句,并返回一个List
+     * @param sql  要执行的SQL语句
+     * @param args 构造SQL语句的字段集合
+     * @param mapping ResultSet转换为实体类的接口对象
+     * @return 返回一个List
+     *
+     * */
+    public List<Object> query(String sql,List args,ResultSetToEntityMapping mapping){
         System.out.println(sql);
-        List<Object> serverinfo_objs = new ArrayList<Object>();
+        List<Object> serverinfo_objs = new ArrayList<Object> ();
         try {
             Class.forName("org.sqlite.JDBC");
             conn = DriverManager.getConnection("jdbc:sqlite:conf/easyxms.db");

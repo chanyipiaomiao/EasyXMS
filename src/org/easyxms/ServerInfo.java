@@ -18,6 +18,10 @@ class ServerInfo {
 
     }
 
+    ServerInfo(String ip){
+        this.ip = ip;
+    }
+
     ServerInfo(String server_group, String username,
                String password,int port) {
         this.server_group = server_group;
@@ -34,6 +38,15 @@ class ServerInfo {
         this.username = username;
         this.port = port;
     }
+
+
+    @Override
+    public String toString() {
+        return String.format("%s %s %s %s %d",this.ip,this.server_group,
+                EncryptDecryptPassword.Decrypt(this.username),
+                EncryptDecryptPassword.Decrypt(this.password),this.port);
+    }
+
 
     public String getIp() {
         return ip;
