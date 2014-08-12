@@ -4,6 +4,7 @@ package org.easyxms;
 import java.util.ArrayList;
 import java.util.List;
 
+
 class ServerInfoDAO {
 
     public void create(){

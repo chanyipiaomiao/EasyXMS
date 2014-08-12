@@ -8,7 +8,6 @@ import java.util.List;
 class DBManager {
 
     private Connection conn = null;
-    private Statement sta = null;
     private PreparedStatement psta = null;
     private ResultSet rs = null;
 
@@ -86,10 +85,6 @@ class DBManager {
             if (psta !=null){
                 psta.close();
                 psta = null;
-            }
-            if (sta != null){
-                sta.close();
-                sta = null;
             }
             if (conn != null){
                 conn.close();

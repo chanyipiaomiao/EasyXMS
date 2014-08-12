@@ -23,8 +23,8 @@ class ServerInfoMapping implements ResultSetToEntityMapping {
                 arrayList.add(rs.getObject(i));
                 i++;
             }
-            serverInfo = new ServerInfo(rs.getString(i++),rs.getString(i++),rs.getString(i++),
-                    rs.getString(i++),rs.getInt(i++));
+//            serverInfo = new ServerInfo(rs.getString(i++),rs.getString(i++),rs.getString(i++),
+//                    rs.getString(i++),rs.getInt(i++));
         } catch (SQLException e){
             System.out.println(e.getMessage());
         }
