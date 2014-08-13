@@ -14,51 +14,72 @@ class ServerInfoDAO {
                 "port integer not null default 22)";
     }
 
-    public void insert(String ip,String server_group,String username,String password,int port){
-        String sql = "insert into ServerInfo (ip,server_group,username,password,port) values('?','?','?','?',?)";
+    public void insert(){
+        String sql = "insert into ServerInfo (ip,server_group,username,password,port) values(?,?,?,?,?)";
     }
 
-    public void queryAllFieldByIP(String ip){
-        String sql = String.format("select * from ServerInfo where ip = '%s'",ip);
+    public List<ServerInfo> queryAllFieldByIP(String ip){
+        String sql = "select * from ServerInfo where ip = ?";
+        DBManager dbManager = new DBManager();
+        List<String> args = new ArrayList<String>();
+        args.add(ip);
+        return dbManager.query(sql,args,new ServerInfoMapping());
     }
 
-    public void queryAllFieldByServerGroup(String server_group){
-        String sql = String.format("select * from ServerInfo where server_group = '%s'",server_group);
+    public List<ServerInfo> queryAllFieldByServerGroup(String server_group){
+        String sql = "select * from ServerInfo where server_group = ?";
+        DBManager dbManager = new DBManager();
+        List<String> args = new ArrayList<String>();
+        args.add(server_group);
+        return dbManager.query(sql,args,new ServerInfoMapping());
     }
 
-    public void queryDistinctServerGroup(){
+    public List<String> queryDistinctServerGroup(){
         String sql = "select distinct server_group from ServerInfo";
+        DBManager dbManager = new DBManager();
+        return dbManager.query(sql,new ArrayList(),"group");
     }
 
-    public List<Object> queryIPServerGroup(){
+    public List<String> queryIPServerGroup(){
         String sql = "select ip,server_group from ServerInfo";
-        int cols = 2;
         DBManager dbManager = new DBManager();
-        List<Object> result_list =  dbManager.query(sql,new ArrayList(),new ServerInfoMapping(cols));
-        return result_list;
+        return dbManager.query(sql,new ArrayList(),"ip_group");
     }
 
-    public void queryIPServerGroupByServerGroup(String server_group){
-        String sql = String.format("select ip,server_group from server_info where server_group = '%s'",server_group);
+    public List<String> queryIPServerGroupByServerGroup(String server_group){
+        String sql = "select ip,server_group from ServerInfo where server_group = ?";
+        DBManager dbManager = new DBManager();
+        List<String> args = new ArrayList<String>();
+        args.add(server_group);
+        return dbManager.query(sql,args,"ip_group_bygroup");
     }
 
-    public List<Object> queryAll(){
+    public List<ServerInfo> queryAll(){
         String sql = "select * from ServerInfo";
-        int cols = 5;
         DBManager dbManager = new DBManager();
-        List<Object> result_list =  dbManager.query(sql,new ArrayList(),new ServerInfoMapping(cols));
-        return result_list;
+        return dbManager.query(sql,new ArrayList(),new ServerInfoMapping());
     }
 
-    public static void deleteByIP(String ip){
-        String sql = String.format("delete from ServerInfo where ip = '%s'",ip);
+    public int deleteByIP(String ip){
+        String sql = "delete from ServerInfo where ip = ?";
+        DBManager dbManager = new DBManager();
+        List<String> args = new ArrayList<String>();
+        args.add(ip);
+        return dbManager.update(sql,args);
     }
 
-    public static void deleteByServerGroup(String server_group){
-        String sql = String.format("delete from ServerInfo where server_group = '%s'",server_group);
+    public int deleteByServerGroup(String server_group){
+        String sql = "delete from ServerInfo where server_group = ?";
+        DBManager dbManager = new DBManager();
+        List<String> args = new ArrayList<String>();
+        args.add(server_group);
+        return dbManager.update(sql,args);
     }
 
-    public static void deleteAll(){
+    public int deleteAll(){
         String sql = "delete from ServerInfo";
+        DBManager dbManager = new DBManager();
+        List<String> args = new ArrayList<String>();
+        return dbManager.update(sql,args);
     }
 }
