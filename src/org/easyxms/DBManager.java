@@ -1,6 +1,7 @@
 package org.easyxms;
 
 
+import java.io.ObjectStreamException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,29 +28,62 @@ class DBManager {
         }
     }
 
+
     /**
      * 用来执行 insert update delete 语句,并返回影响的行数
      * @param sql  要执行的SQL语句
-     * @param args 构造SQL语句的字段集合
+     * @param objects 是ServerInfo对象
      * @return 返回影响的行数
      *
      * */
-    int update(String sql,List args){
-        int row = 0;
+    int[] update(String sql,List<Object> objects){
+        int[] rows = new int[objects.size()];
         try {
             if (conn != null){
                 psta = conn.prepareStatement(sql);
-                for (int i = 0; i < args.size(); i++) {
-                    psta.setObject(i+1,args.get(i));
+                for (Object obj : objects){
+                    String ip = ((ServerInfo) obj).getIp();
+                    if (query(sql,ip)){
+
+                    }
+                    psta.setObject(1,ip);
+                    psta.setObject(2,((ServerInfo) obj).getServer_group());
+                    psta.setObject(3,((ServerInfo) obj).getUsername());
+                    psta.setObject(4,((ServerInfo) obj).getPassword());
+                    psta.setObject(5,((ServerInfo) obj).getPort());
+                    psta.addBatch();
                 }
-                row = psta.executeUpdate();
+                rows = psta.executeBatch();
             }
         } catch (SQLException e){
             System.out.println(e.getMessage());
         } finally {
             this.close();
         }
-        return row;
+        return rows;
+    }
+
+
+    /**
+     * 用来执行select语句并返回true false，用来查询ip或者server_group是否存在
+     * @param sql 要执行的SQL语句
+     * @param ip_group 要查询的是ip或者是server_group
+     * @return 如果ip或者是server_group存在则返回true,否则返回false
+     */
+    boolean query(String sql,String ip_group){
+        try {
+            if (conn != null){
+                psta = conn.prepareStatement(sql);
+                psta.setString(1,ip_group);
+                ResultSet rs = psta.executeQuery();
+                if (rs.next()){
+                    return true;
+                }
+            }
+        } catch (SQLException e){
+            System.out.println(e.getMessage());
+        }
+        return false;
     }
 
 
