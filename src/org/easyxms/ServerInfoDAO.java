@@ -19,17 +19,24 @@ class ServerInfoDAO {
     static String deleteByIP = "delete from ServerInfo where ip = ?";
     static String deleteByServerGroup = "delete from ServerInfo where server_group = ?";
     static String deleteAll = "delete from ServerInfo";
+    static String createTable = "create table if not exists ServerInfo11 " +
+                                "(ip text not null,server_group text not null," +
+                                "username text not null default 'root',password text not null," +
+                                "port integer not null default 22)";
 
-    public void create(){
-        String sql = "create table if not exists ServerInfo " +
-                "(ip text not null,server_group text not null," +
-                "username text not null default 'root',password text not null," +
-                "port integer not null default 22)";
+
+    ServerInfoDAO() {
+        this.createTable();
+    }
+
+    public void createTable(){
+        DBManager dbManager = new DBManager();
+        dbManager.create(createTable);
     }
 
     public int[] insert(List<Object> objects){
         DBManager dbManager = new DBManager();
-        return dbManager.update(insert,objects);
+        return dbManager.insert(insert, objects, queryAllFieldByIP);
     }
 
     public List<ServerInfo> queryAllFieldByIP(String ip){
@@ -68,23 +75,22 @@ class ServerInfoDAO {
         return dbManager.query(queryAll,new ArrayList(),new ServerInfoMapping());
     }
 
-//    public int deleteByIP(String ip){
-//        DBManager dbManager = new DBManager();
-//        List<String> args = new ArrayList<String>();
-//        args.add(ip);
-//        return dbManager.update(deleteByIP,args);
-//    }
-//
-//    public int deleteByServerGroup(String server_group){
-//        DBManager dbManager = new DBManager();
-//        List<String> args = new ArrayList<String>();
-//        args.add(server_group);
-//        return dbManager.update(deleteByServerGroup,args);
-//    }
-//
-//    public int deleteAll(){
-//        DBManager dbManager = new DBManager();
-//        List<String> args = new ArrayList<String>();
-//        return dbManager.update(deleteAll,args);
-//    }
+    public int[] deleteByIP(String ip){
+        DBManager dbManager = new DBManager();
+        List<String> args = new ArrayList<String>();
+        args.add(ip);
+        return dbManager.delete(deleteByIP, args, queryAllFieldByIP);
+    }
+
+    public int[] deleteByServerGroup(String server_group){
+        DBManager dbManager = new DBManager();
+        List<String> args = new ArrayList<String>();
+        args.add(server_group);
+        return dbManager.delete(deleteByServerGroup,args,queryAllFieldByServerGroup);
+    }
+
+    public int deleteAll(){
+        DBManager dbManager = new DBManager();
+        return dbManager.delete(deleteAll);
+    }
 }

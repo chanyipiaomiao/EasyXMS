@@ -1,23 +1,23 @@
 package org.easyxms;
 
 
-import java.io.ObjectStreamException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 
 /**
- * 用来执行连接数据库、更新、查询操作
+ * 用来执行连接数据库、插入、查询、删除操作
  */
 class DBManager {
 
-    private Connection conn = null;
-    private PreparedStatement psta = null;
-    private ResultSet rs = null;
 
-
-    DBManager() {
+    /**
+     * 获得数据库连接
+     * @return 连接对象
+     */
+    Connection getConnection(){
+        Connection conn = null;
         try {
             Class.forName("org.sqlite.JDBC");
             conn = DriverManager.getConnection("jdbc:sqlite:conf/easyxms.db");
@@ -26,39 +26,119 @@ class DBManager {
         } catch (SQLException e){
             System.out.println(e.getMessage());
         }
+        return conn;
     }
 
 
     /**
-     * 用来执行 insert update delete 语句,并返回影响的行数
-     * @param sql  要执行的SQL语句
+     * 创建表
+     * @param create_table_sql 创建表语句
+     */
+    void create(String create_table_sql){
+        Connection conn = this.getConnection();
+        PreparedStatement psta = null;
+        try {
+            if (conn != null){
+                psta = conn.prepareStatement(create_table_sql);
+                psta.executeUpdate();
+            }
+        } catch (SQLException e){
+            System.out.println(e.getMessage());
+        } finally {
+            this.close(psta,conn);
+        }
+    }
+
+
+    /**
+     * 用来执行 insert 语句,并返回影响的行数
+     * @param update_sql  要执行的插入,删除SQL语句
      * @param objects 是ServerInfo对象
+     * @param query_sql  查询的某个IP或者组的SQL语句
      * @return 返回影响的行数
      *
      * */
-    int[] update(String sql,List<Object> objects){
-        int[] rows = new int[objects.size()];
+    int[] insert(String update_sql,List<Object> objects,String query_sql){
+        Connection conn = this.getConnection();
+        PreparedStatement psta = null;
+        int[] rows = new int[0];
         try {
             if (conn != null){
-                psta = conn.prepareStatement(sql);
+                psta = conn.prepareStatement(update_sql);
                 for (Object obj : objects){
                     String ip = ((ServerInfo) obj).getIp();
-                    if (query(sql,ip)){
-
+                    if (query(query_sql,ip)){
+                        System.out.printf("[ %s ] Already Exists!!!\n", ip);
+                    } else {
+                        psta.setObject(1,ip);
+                        psta.setObject(2,((ServerInfo) obj).getServer_group());
+                        psta.setObject(3,((ServerInfo) obj).getUsername());
+                        psta.setObject(4,((ServerInfo) obj).getPassword());
+                        psta.setObject(5,((ServerInfo) obj).getPort());
+                        psta.addBatch();
+                        System.out.printf("[ %s ] Add ... OK !!!\n", ip);
                     }
-                    psta.setObject(1,ip);
-                    psta.setObject(2,((ServerInfo) obj).getServer_group());
-                    psta.setObject(3,((ServerInfo) obj).getUsername());
-                    psta.setObject(4,((ServerInfo) obj).getPassword());
-                    psta.setObject(5,((ServerInfo) obj).getPort());
-                    psta.addBatch();
                 }
                 rows = psta.executeBatch();
             }
         } catch (SQLException e){
             System.out.println(e.getMessage());
         } finally {
-            this.close();
+            this.close(psta,conn);
+        }
+        return rows;
+    }
+
+
+    /**
+     * 删除操作
+     * @param delete_sql 删除的SQL语句
+     * @param args       删除语句的参数
+     * @param query_sql  查询语句，删除之前需要查询是否存在
+     * @return 返回一个影响的行数的数组
+     */
+    int[] delete(String delete_sql,List<String> args,String query_sql){
+        int[] rows = new int[0];
+        Connection conn = this.getConnection();
+        PreparedStatement psta = null;
+        try {
+            if (conn != null){
+                psta = conn.prepareStatement(delete_sql);
+                String isIPorGroup = args.get(0);
+                if (query(query_sql,isIPorGroup)){
+                    psta.setObject(1,isIPorGroup);
+                    psta.executeUpdate();
+                    System.out.printf("[ %s ] delete ... OK", isIPorGroup);
+                } else {
+                    System.out.printf("[ %s ] not exists", isIPorGroup);
+                }
+            }
+        } catch (SQLException e){
+            System.out.println(e.getMessage());
+        } finally {
+            this.close(psta,conn);
+        }
+        return rows;
+    }
+
+
+    /**
+     * 清空表
+     * @param delete_all_sql 清空表的SQL语句
+     * @return 影响的行数
+     */
+    int delete(String delete_all_sql){
+        int rows = 0;
+        Connection conn = this.getConnection();
+        PreparedStatement psta = null;
+        try {
+            psta = conn.prepareStatement(delete_all_sql);
+            rows = psta.executeUpdate();
+            System.out.println("Empty Table ... OK !!!");
+        } catch (SQLException e){
+            System.out.println(e.getMessage());
+        } finally {
+            this.close(psta,conn);
         }
         return rows;
     }
@@ -71,17 +151,22 @@ class DBManager {
      * @return 如果ip或者是server_group存在则返回true,否则返回false
      */
     boolean query(String sql,String ip_group){
+        Connection conn = this.getConnection();
+        PreparedStatement psta = null;
+        ResultSet rs = null;
         try {
             if (conn != null){
                 psta = conn.prepareStatement(sql);
                 psta.setString(1,ip_group);
-                ResultSet rs = psta.executeQuery();
+                rs = psta.executeQuery();
                 if (rs.next()){
                     return true;
                 }
             }
         } catch (SQLException e){
             System.out.println(e.getMessage());
+        } finally {
+            this.close(rs,psta,conn);
         }
         return false;
     }
@@ -96,14 +181,17 @@ class DBManager {
      *
      * */
     List<ServerInfo> query(String sql,List args,ResultSetToEntityMapping mapping){
+        Connection conn = this.getConnection();
         List<ServerInfo> serverinfo_objs = new ArrayList<ServerInfo>();
+        PreparedStatement psta = null;
+        ResultSet rs = null;
         try {
             if (conn != null){
                 psta = conn.prepareStatement(sql);
                 for (int i = 0; i < args.size(); i++) {
                     psta.setObject(i+1,args.get(i));
                 }
-                ResultSet rs = psta.executeQuery();
+                rs = psta.executeQuery();
                 while (rs.next()){
                     serverinfo_objs.add((ServerInfo)mapping.mapping(rs));
                 }
@@ -111,7 +199,7 @@ class DBManager {
         }catch (SQLException e){
             System.out.println(e.getMessage());
         } finally {
-            this.close();
+            this.close(rs,psta,conn);
         }
         return serverinfo_objs;
     }
@@ -125,6 +213,9 @@ class DBManager {
      * @return  返回一个String List
      */
     List<String> query(String sql,List args,String identifier){
+        Connection conn = this.getConnection();
+        PreparedStatement psta = null;
+        ResultSet rs = null;
         List<String> result_list = new ArrayList<String>();
         StringBuilder str = new StringBuilder("");
         try {
@@ -133,7 +224,7 @@ class DBManager {
                 for (int i = 0; i < args.size(); i++) {
                     psta.setObject(i+1,args.get(i));
                 }
-                ResultSet rs = psta.executeQuery();
+                rs = psta.executeQuery();
                 if ("ip_group".equals(identifier)){
                     while (rs.next()){
                         str.append(rs.getString("ip"));
@@ -159,7 +250,7 @@ class DBManager {
         } catch (SQLException e){
             System.out.println(e.getMessage());
         } finally {
-            this.close();
+            this.close(rs,psta,conn);
         }
         return result_list;
     }
@@ -169,19 +260,34 @@ class DBManager {
      * 关闭函数
      *
      * */
-    void close(){
+    void close(ResultSet rs,PreparedStatement psta,Connection conn){
         try {
             if (rs !=null){
                 rs.close();
-                rs = null;
             }
             if (psta !=null){
                 psta.close();
-                psta = null;
             }
             if (conn != null){
                 conn.close();
-                conn = null;
+            }
+        } catch (SQLException e){
+            System.out.println(e.getMessage());
+        }
+    }
+
+
+    /**
+     * 关闭函数
+     *
+     * */
+    void close(PreparedStatement psta,Connection conn){
+        try {
+            if (psta !=null){
+                psta.close();
+            }
+            if (conn != null){
+                conn.close();
             }
         } catch (SQLException e){
             System.out.println(e.getMessage());
