@@ -43,7 +43,7 @@ class HelpPrompt {
 
     /** 询问是否退出 */
     public static void printAskQuit(){
-        System.out.print("Are you sure Quit (y/n): ");
+        System.out.print("Are you sure Quit ([y]/n): ");
     }
 
     /** 显示输入错误 */
@@ -53,7 +53,7 @@ class HelpPrompt {
 
     /** 显示增加服务器提示 */
     public static void printAddServer(){
-        System.out.print("Enter Server Like '192.168.1.1 web root 123 22': ");
+        System.out.print("Enter Server Like '1.1.1.1 web root 123 22': ");
     }
 
     /** 显示数据库连接失败 */
@@ -63,7 +63,7 @@ class HelpPrompt {
 
     /** 提示输入Excel文件的路径 */
     public static void printExcelFilePath(){
-        System.out.print("Enter Excel File Path : ");
+        System.out.print("Enter Excel File Path: ");
     }
 
     /** 显示增加服务器成功 */
@@ -88,7 +88,7 @@ class HelpPrompt {
 
     /** 显示数据库中没有数据 用于在列出信息时*/
     public static void printNoDataInDataBase(){
-        System.out.println("no Data in Database!!!");
+        System.out.println("Oops,No Data in Database!!!");
     }
 
     /** 显示输入要删除的IP信息 */

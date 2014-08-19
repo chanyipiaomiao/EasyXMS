@@ -5,21 +5,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-
 class ServerInfoDAO {
 
 
-    static String insert = "insert into ServerInfo (ip,server_group,username,password,port) values(?,?,?,?,?)";
-    static String queryAllFieldByIP = "select * from ServerInfo where ip = ?";
-    static String queryAllFieldByServerGroup = "select * from ServerInfo where server_group = ?";
-    static String queryDistinctServerGroup = "select distinct server_group from ServerInfo";
-    static String queryIPServerGroup = "select ip,server_group from ServerInfo";
-    static String queryIPServerGroupByServerGroup = "select ip,server_group from ServerInfo where server_group = ?";
-    static String queryAll = "select * from ServerInfo";
-    static String deleteByIP = "delete from ServerInfo where ip = ?";
-    static String deleteByServerGroup = "delete from ServerInfo where server_group = ?";
-    static String deleteAll = "delete from ServerInfo";
-    static String createTable = "create table if not exists ServerInfo11 " +
+    private String insert = "insert into ServerInfo (ip,server_group,username,password,port) values(?,?,?,?,?)";
+    private String queryAllFieldByIP = "select * from ServerInfo where ip = ?";
+    private String queryAllFieldByServerGroup = "select * from ServerInfo where server_group = ?";
+    private String queryDistinctServerGroup = "select distinct server_group from ServerInfo";
+    private String queryIPServerGroup = "select ip,server_group from ServerInfo";
+    private String queryIPServerGroupByServerGroup = "select ip,server_group from ServerInfo where server_group = ?";
+    private String queryAll = "select * from ServerInfo";
+    private String deleteByIP = "delete from ServerInfo where ip = ?";
+    private String deleteByServerGroup = "delete from ServerInfo where server_group = ?";
+    private String deleteAll = "delete from ServerInfo";
+    private String createTable = "create table if not exists ServerInfo " +
                                 "(ip text not null,server_group text not null," +
                                 "username text not null default 'root',password text not null," +
                                 "port integer not null default 22)";

@@ -2,9 +2,9 @@ package org.easyxms;
 
 
 
-import java.util.HashMap;
+import java.util.List;
 
 
 abstract class GetIPInfoFromFile {
-    abstract HashMap<String,Object> getIPInfo(String file);
+    abstract List<Object> getIPInfo(String file);
 }

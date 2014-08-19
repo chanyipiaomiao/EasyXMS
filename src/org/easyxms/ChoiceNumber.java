@@ -6,10 +6,12 @@ class ChoiceNumber {
     private String cmd = null;
     private GetInput getInput = null;
     private OperateDataBase operateDataBase = null;
+    private ServerInfoDAO serverInfoDAO = null;
     private ActionForChoiceNumber action = null;
 
     ChoiceNumber() {
         getInput = new GetInput();
+        serverInfoDAO = new ServerInfoDAO();
         operateDataBase = new OperateDataBase();
         operateDataBase.connectDatabase();
         action = new ActionForChoiceNumber();
@@ -22,13 +24,13 @@ class ChoiceNumber {
             if ("?".equals(cmd) || "？".equals(cmd)){
                 HelpPrompt.printPrompt();
             } else if ("1".equals(cmd)){
-                action.addServerFromCommandLine(operateDataBase);
+                action.addServerFromCommandLine(serverInfoDAO);
             } else if ("2".equals(cmd)){
-                action.addServerFromExcelFile(operateDataBase);
+                action.addServerFromExcelFile(serverInfoDAO);
             } else if ("3".equals(cmd)){
-                action.listIPGroupFromDatabase(operateDataBase);
+                action.listIPGroupFromDatabase(serverInfoDAO);
             } else if ("4".equals(cmd)){
-                action.listGroupFromDatabase(operateDataBase);
+                action.listGroupFromDatabase(serverInfoDAO);
             } else if ("5".equals(cmd)){
                 action.deleteServerInfoFromDatabase(operateDataBase);
             } else if ("6".equals(cmd)){
@@ -47,7 +49,7 @@ class ChoiceNumber {
         HelpPrompt.printProgramName();
         cmd = getInput.getInputFromStandardInput();
         if ("q".equals(cmd) || "Q".equals(cmd)){
-            Quit.quit(operateDataBase);
+            Quit.quit();
         }
         return true;
     }

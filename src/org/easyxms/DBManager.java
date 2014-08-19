@@ -68,7 +68,7 @@ class DBManager {
                 for (Object obj : objects){
                     String ip = ((ServerInfo) obj).getIp();
                     if (query(query_sql,ip)){
-                        System.out.printf("[ %s ] Already Exists!!!\n", ip);
+                        System.out.printf("[ %s ] Already Exists\n", ip);
                     } else {
                         psta.setObject(1,ip);
                         psta.setObject(2,((ServerInfo) obj).getServer_group());
@@ -76,7 +76,7 @@ class DBManager {
                         psta.setObject(4,((ServerInfo) obj).getPassword());
                         psta.setObject(5,((ServerInfo) obj).getPort());
                         psta.addBatch();
-                        System.out.printf("[ %s ] Add ... OK !!!\n", ip);
+                        System.out.printf("[ %s ] Add ... OK\n", ip);
                     }
                 }
                 rows = psta.executeBatch();
@@ -108,9 +108,9 @@ class DBManager {
                 if (query(query_sql,isIPorGroup)){
                     psta.setObject(1,isIPorGroup);
                     psta.executeUpdate();
-                    System.out.printf("[ %s ] delete ... OK", isIPorGroup);
+                    System.out.printf("[ %s ] Delete ... OK\n", isIPorGroup);
                 } else {
-                    System.out.printf("[ %s ] not exists", isIPorGroup);
+                    System.out.printf("[ %s ] Not Exists\n", isIPorGroup);
                 }
             }
         } catch (SQLException e){
@@ -134,7 +134,7 @@ class DBManager {
         try {
             psta = conn.prepareStatement(delete_all_sql);
             rows = psta.executeUpdate();
-            System.out.println("Empty Table ... OK !!!");
+            System.out.println("Empty Table ... OK");
         } catch (SQLException e){
             System.out.println(e.getMessage());
         } finally {

@@ -1,7 +1,9 @@
 package org.easyxms;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 
 class ActionForChoiceNumber {
@@ -12,48 +14,79 @@ class ActionForChoiceNumber {
         return getInput.getInputFromStandardInput();
     }
 
-    /** 从命令行增加一台服务器信息 */
-    void addServerFromCommandLine(OperateDataBase operateDataBase){
-        HelpPrompt.printAddServer();
-        String cmd = getInputContent();
-        String command[] = cmd.split("\\s+");
-        if (command.length == 5 && FunctionKit.checkStringIsIP(command[0])){
-            String username = EncryptDecryptPassword.Encrypt(command[2]);
-            String password = EncryptDecryptPassword.Encrypt(command[3]);
-            int port = Integer.parseInt(command[4]);
-            operateDataBase.insertData(command[0],command[1],username,password,port);
+    /**
+     * 把字符串转换为一个对象
+     * @param host 主机信息字符串
+     * @return ServerInfo对象
+     */
+    ServerInfo stringToObject(String host){
+        ServerInfo serverInfo = null;
+        String[] host_infos = host.split("\\s+");
+        if (host_infos.length == 5){
+            String ip = host_infos[0];
+            if (FunctionKit.checkStringIsIP(ip)){
+                String group = host_infos[1];
+                String username = EncryptDecryptPassword.Encrypt(host_infos[2]);
+                String password = EncryptDecryptPassword.Encrypt(host_infos[3]);
+                int port = Integer.parseInt(host_infos[4]);
+                serverInfo = new ServerInfo(ip,group,username,password,port);
+            } else {
+                HelpPrompt.printInputError();
+            }
         } else {
             HelpPrompt.printInputError();
+        }
+        return serverInfo;
+    }
+
+
+    /** 从命令行增加一台服务器信息 */
+    void addServerFromCommandLine(ServerInfoDAO serverInfoDAO){
+
+        HelpPrompt.printAddServer();
+        String input = getInputContent();
+        List<Object> objects = new ArrayList<Object>();
+
+        if (input.contains(";")){
+            String hosts[] = input.trim().split(";");
+            for (String host : hosts){
+                ServerInfo serverInfo = stringToObject(host);
+                if (serverInfo != null){
+                    objects.add(serverInfo);
+                }
+            }
+        } else {
+            ServerInfo serverInfo = stringToObject(input);
+            if (serverInfo != null){
+                objects.add(serverInfo);
+            }
+        }
+
+        if (objects.size() != 0){
+            serverInfoDAO.insert(objects);
         }
     }
 
 
     /** 从Excel文件中添加服务器信息 */
-    void addServerFromExcelFile(OperateDataBase operateDataBase){
+    void addServerFromExcelFile(ServerInfoDAO serverInfoDAO){
         HelpPrompt.printExcelFilePath();
         String ask_excel_file = getInputContent();
         if (! FunctionKit.checkStringLengthIsZero(ask_excel_file)){
             HelpPrompt.printInputError();
         } else {
             GetIPInfoFromFile getIPInfoFromFile = new GetIPInfoFromExcel();
-            HashMap<String,Object> servers_map = getIPInfoFromFile.getIPInfo(ask_excel_file);
-            if (servers_map.size() != 0){
-                for (String ip : servers_map.keySet()){
-                    ServerInfo serverInfo = (ServerInfo)servers_map.get(ip);
-                    String group = serverInfo.getServer_group();
-                    String username = EncryptDecryptPassword.Encrypt(serverInfo.getUsername());
-                    String password = EncryptDecryptPassword.Encrypt(serverInfo.getPassword());
-                    int port = serverInfo.getPort();
-                    operateDataBase.insertData(ip,group,username,password,port);
-                }
+            List<Object> objects = getIPInfoFromFile.getIPInfo(ask_excel_file);
+            if (objects.size() != 0){
+                serverInfoDAO.insert(objects);
             }
         }
     }
 
 
     /** 列出数据库中的服务器信息（IP Group） */
-    void listIPGroupFromDatabase(OperateDataBase operateDataBase){
-        if (operateDataBase.isTableNull()){
+    void listIPGroupFromDatabase(ServerInfoDAO serverInfoDAO){
+        if (serverInfoDAO.queryAll().size() == 0){
             HelpPrompt.printNoDataInDataBase();
         } else {
             HelpPrompt.printListServer();
@@ -63,11 +96,16 @@ class ActionForChoiceNumber {
             } else {
                 String list_group[] = ask_list_group.split("\\s+");
                 if (list_group.length == 1 && "all".equals(list_group[0])){
-                    operateDataBase.listAllIPGroupOnConditionIsAll();
+                    List<String> result = serverInfoDAO.queryIPServerGroup();
+                    for (String ip_group : result){
+                        System.out.println(ip_group);
+                    }
                 } else {
                     for (String group_name : list_group){
-                        if (operateDataBase.isGroupExists(group_name)){
-                            operateDataBase.loopPrintIPGroup(group_name);
+                        if (serverInfoDAO.queryAllFieldByServerGroup(group_name).size() != 0){
+                            for (String ip_group : serverInfoDAO.queryIPServerGroupByServerGroup(group_name)){
+                                System.out.println(ip_group);
+                            }
                         } else {
                             HelpPrompt.printIpOrGroupNotExists(group_name);
                         }
@@ -79,8 +117,15 @@ class ActionForChoiceNumber {
 
 
     /** 列出数据库中的分组 */
-    void listGroupFromDatabase(OperateDataBase operateDataBase){
-        operateDataBase.QueryAllGroups();
+    void listGroupFromDatabase(ServerInfoDAO serverInfoDAO){
+        if (serverInfoDAO.queryAll().size() == 0){
+            HelpPrompt.printNoDataInDataBase();
+        } else {
+            List<String> result = serverInfoDAO.queryDistinctServerGroup();
+            for (String group : result){
+                System.out.println(group);
+            }
+        }
     }
 
 
