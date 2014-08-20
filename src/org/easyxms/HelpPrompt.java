@@ -68,12 +68,12 @@ class HelpPrompt {
 
     /** 显示增加服务器成功 */
     public static void printAddServerSuccess(String ip){
-        System.out.println(String.format("Add Server [ %s ] Success !", ip));
+        System.out.printf("[ %s ] Add ... OK\n", ip);
     }
 
     /** 显示IP信息已经存在 */
     public static void printIPAlreadyExists(String ip){
-        System.out.println(String.format("IP [ %s ] is aleady exists!", ip));
+        System.out.printf("[ %s ] Already Exists\n", ip);
     }
 
     /** 显示列出服务器信息提示 */
@@ -88,7 +88,7 @@ class HelpPrompt {
 
     /** 显示数据库中没有数据 用于在列出信息时*/
     public static void printNoDataInDataBase(){
-        System.out.println("Oops,No Data in Database!!!");
+        System.out.println("Oops,No Server in Database!!!");
     }
 
     /** 显示输入要删除的IP信息 */
@@ -98,12 +98,12 @@ class HelpPrompt {
 
     /** 显示IP不在数据库中 用于在删除信息 */
     public static void printIpOrGroupNotExists(String ip_or_group){
-        System.out.printf("[ %s ] Not exists\n",ip_or_group);
+        System.out.printf("[ %s ] Not Exists\n", ip_or_group);
     }
 
     /** 显示删除IP或分组成功 */
     public static void printDeleteServerInfoSucessful(String ip_or_group){
-        System.out.printf("[ %s ] delete Sucessful !\n",ip_or_group);
+        System.out.printf("[ %s ] Delete ... OK\n", ip_or_group);
     }
 
     /** 询问是否真的要清空整个表 */
@@ -113,7 +113,7 @@ class HelpPrompt {
 
     /** 显示清空表成功 */
     public static void printClearTableSucessful(){
-        System.out.println("Clear All Server Sucessful!!!");
+        System.out.println("Clear All Server ... OK");
     }
 
     /** 显示什么也没发生 清空表的时候，选择n或者其他键（除y|Y之外） */

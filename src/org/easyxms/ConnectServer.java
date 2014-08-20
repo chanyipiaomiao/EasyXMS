@@ -7,15 +7,13 @@ import com.jcraft.jsch.*;
 class ConnectServer{
 
     private ServerInfo serverInfo = null;
-    private String ip = null;
     private static WriteLog writeLog = null;
 
     ConnectServer(){
 
     }
 
-    ConnectServer(String ip,ServerInfo serverInfo){
-        this.ip = ip;
+    ConnectServer(ServerInfo serverInfo){
         this.serverInfo = serverInfo;
     }
 
@@ -23,10 +21,15 @@ class ConnectServer{
         ConnectServer.writeLog = writeLog;
     }
 
-    /** 连接服务器打开会话 */
+
+    /**
+     * 连接服务器打开会话
+     * @return 连接会话对象
+     */
     public Session connectServerOpenSession(){
         JSch jSch = new JSch();
         Session session = null;
+        String ip = serverInfo.getIp();
         try {
             session = jSch.getSession(serverInfo.getUsername(),ip,serverInfo.getPort());
             session.setPassword(serverInfo.getPassword());

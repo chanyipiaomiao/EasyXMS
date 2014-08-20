@@ -4,39 +4,67 @@ package org.easyxms;
 import com.jcraft.jsch.Session;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 
 class MultiThread{
 
-    /**
-     * type 为连接的类型(新建/利用已经建立的会话连接)
-     * 当type为 new 时,会初始化session连接
-     * 当为 session时,会利用现有的session会话连接
-     * */
-    public void startMultiThread(String type,HashMap<String,Object> hashMap){
 
-        SubProcessControl count_down = new SubProcessControl(hashMap.size());
-        ExecCommand.setCountDownLatch(count_down); //设置线程同步计数器的数目
+    /**
+     * 新建会话开始多线程
+     * @param objects ServerInfo对象列表
+     */
+    public void startMultiThread(List<ServerInfo> objects){
+
+        CountDownLatch wait_thread_run_end = new CountDownLatch(objects.size());
+        ExecCommand.setCountDownLatch(wait_thread_run_end); //设置线程同步计数器的数目
 
         //初始化用于存放线程的列表
         ArrayList<Thread> threadArrayList = new ArrayList<Thread>();
-        if ("new".equals(type)){
-            ExecCommand.setIs_use_session_pool(0);
-            for (String ip : hashMap.keySet()){
-                ServerInfo info = (ServerInfo)hashMap.get(ip);
-                threadArrayList.add(new Thread(new ExecCommand(ip,info)));
-            }
-        } else if ("session".equals(type)){
-            ExecCommand.setIs_use_session_pool(1);
-            for (String ip : hashMap.keySet()){
-                Session session = ((ConnectionObject)hashMap.get(ip)).getSession();
-                if (session.isConnected()){
-                    threadArrayList.add(new Thread(new ExecCommand(ip,session)));
-                } else {
-                    HelpPrompt.printIPSessionAlreadyDisconnect(ip);
-                }
+
+        ExecCommand.setIs_use_session_pool(0);
+        for (ServerInfo serverInfo : objects){
+            threadArrayList.add(new Thread(new ExecCommand(serverInfo)));
+        }
+
+        threadControl(threadArrayList,wait_thread_run_end);
+    }
+
+
+    /**
+     * 使用已经连接的会话开始多线程
+     * @param session_pool 会话池
+     */
+    public void startMultiThread(HashMap<String, Object> session_pool){
+
+        CountDownLatch wait_thread_run_end = new CountDownLatch(session_pool.size());
+        ExecCommand.setCountDownLatch(wait_thread_run_end); //设置线程同步计数器的数目
+
+        //初始化用于存放线程的列表
+        ArrayList<Thread> threadArrayList = new ArrayList<Thread>();
+
+        ExecCommand.setIs_use_session_pool(1);
+
+        for (String ip : session_pool.keySet()){
+            Session session = ((ConnectionObject)session_pool.get(ip)).getSession();
+            if (session.isConnected()){
+                threadArrayList.add(new Thread(new ExecCommand(ip,session)));
+            } else {
+                HelpPrompt.printIPSessionAlreadyDisconnect(ip);
             }
         }
+
+        threadControl(threadArrayList,wait_thread_run_end);
+    }
+
+
+    /**
+     * 控制主线程等待所有子线程运行结束
+     * @param threadArrayList   要运行的线程对象列表
+     * @param wait_thread_run_end 程同步计数器的数目
+     */
+    public void threadControl(ArrayList<Thread> threadArrayList, CountDownLatch wait_thread_run_end){
 
         //开始执行多线程
         for (Thread thread : threadArrayList){
@@ -44,7 +72,11 @@ class MultiThread{
         }
 
         //等待所有子线程运行结束
-        count_down.wait_all_thread_end();
+        try {
+            wait_thread_run_end.await();
+        } catch (InterruptedException e){
+            HelpPrompt.printInfo(e.getMessage());
+        }
     }
 }
 

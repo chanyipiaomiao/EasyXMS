@@ -26,9 +26,9 @@ class ExecCommand extends ConnectServer implements Runnable{
         this.session = session;
     }
 
-    ExecCommand(String ip, ServerInfo serverInfo) {
-        super(ip, serverInfo);
-        this.ip = ip;
+    ExecCommand(ServerInfo serverInfo) {
+        super(serverInfo);
+        this.ip = serverInfo.getIp();
     }
 
     @Override
@@ -51,8 +51,8 @@ class ExecCommand extends ConnectServer implements Runnable{
 
 
     //设置子线程同步计数器
-    public static void setCountDownLatch(SubProcessControl count_down) {
-        countDownLatch = count_down.getWait_all_thread_run_end();
+    public static void setCountDownLatch(CountDownLatch count_down) {
+        countDownLatch = count_down;
     }
 
 
@@ -62,7 +62,9 @@ class ExecCommand extends ConnectServer implements Runnable{
     }
 
 
-    /** 打开执行命令通道 */
+    /**
+     * 打开执行命令通道
+     */
     public void openExecCommandChannel(){
         Session session = super.connectServerOpenSession();
         if (session.isConnected()){
@@ -73,7 +75,10 @@ class ExecCommand extends ConnectServer implements Runnable{
     }
 
 
-    /** 执行命令得到结果 */
+    /**
+     * 执行命令得到结果
+     * @param session 连接之后形成的会话
+     */
     public void execCommandGetResult(Session session){
         StringBuilder result = new StringBuilder();
         result.append(String.format("======== [ %s ] Execute Command: < %s >, The result is :\n",ip,command));
@@ -97,6 +102,7 @@ class ExecCommand extends ConnectServer implements Runnable{
                 result.append(error_result.readLine());
                 result.append("\n");
             }
+
         } catch (IOException e){
             HelpPrompt.printInfo(e.getMessage());
         } catch (InterruptedException e){

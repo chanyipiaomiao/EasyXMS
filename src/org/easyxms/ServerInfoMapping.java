@@ -8,6 +8,11 @@ import java.sql.SQLException;
 class ServerInfoMapping implements ResultSetToEntityMapping {
 
 
+    /**
+     * 把ResultSet结果集转换为ServerInfo对象
+     * @param rs 结果集对象
+     * @return 一个ServerInfo对象
+     */
     @Override
     public ServerInfo mapping(ResultSet rs) {
 

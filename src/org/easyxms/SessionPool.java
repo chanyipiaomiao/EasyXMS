@@ -3,6 +3,10 @@ package org.easyxms;
 
 import java.util.HashMap;
 
+
+/**
+ * 连接池
+ */
 class SessionPool {
 
     private static HashMap<String, Object> ssh_connection_pool = null;

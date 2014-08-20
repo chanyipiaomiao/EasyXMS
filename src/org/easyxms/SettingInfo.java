@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
 
+
 class SettingInfo {
 
     private static int enable_http_proxy = 0;
@@ -36,9 +37,6 @@ class SettingInfo {
     public static void settingInfo(){
 
         Properties properties = getConfigureFromPropertiesFile();
-
-        //设置数据库文件的名称
-        SqlRelevant.setDb_name(properties.getProperty("db_name"));
 
         //设置HTTP代理相关
         enable_http_proxy = Integer.parseInt(properties.getProperty("enable_http_proxy"));

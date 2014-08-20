@@ -7,12 +7,17 @@ import jxl.read.biff.BiffException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 
 class GetIPInfoFromExcel extends GetIPInfoFromFile{
 
+
+    /**
+     * 从Excel文件中得到IP信息
+     * @param excel_file 存放IP信息的Excel文件
+     * @return 一个对象列表
+     */
     @Override
     List<Object> getIPInfo(String excel_file) {
         List<Object> objects = new ArrayList<Object>();

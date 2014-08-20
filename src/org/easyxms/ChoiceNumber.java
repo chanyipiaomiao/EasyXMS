@@ -5,15 +5,12 @@ class ChoiceNumber {
 
     private String cmd = null;
     private GetInput getInput = null;
-    private OperateDataBase operateDataBase = null;
     private ServerInfoDAO serverInfoDAO = null;
     private ActionForChoiceNumber action = null;
 
     ChoiceNumber() {
         getInput = new GetInput();
         serverInfoDAO = new ServerInfoDAO();
-        operateDataBase = new OperateDataBase();
-        operateDataBase.connectDatabase();
         action = new ActionForChoiceNumber();
     }
 
@@ -32,9 +29,9 @@ class ChoiceNumber {
             } else if ("4".equals(cmd)){
                 action.listGroupFromDatabase(serverInfoDAO);
             } else if ("5".equals(cmd)){
-                action.deleteServerInfoFromDatabase(operateDataBase);
+                action.deleteServerInfoFromDatabase(serverInfoDAO);
             } else if ("6".equals(cmd)){
-                action.connectServerForSSHSFTP(operateDataBase,"ssh");
+                action.connectServerForSSHSFTP(serverInfoDAO,"ssh");
             } else if ("7".equals(cmd)){
                 System.out.println("上传文件");
             } else if ("8".equals(cmd)){

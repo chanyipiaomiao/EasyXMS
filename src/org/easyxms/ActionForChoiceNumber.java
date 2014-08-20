@@ -130,8 +130,8 @@ class ActionForChoiceNumber {
 
 
     /** 删除指定的服务器信息 */
-    void deleteServerInfoFromDatabase(OperateDataBase operateDataBase){
-        if (operateDataBase.isTableNull()){
+    void deleteServerInfoFromDatabase(ServerInfoDAO serverInfoDAO){
+        if (serverInfoDAO.queryAll().size() == 0){
             HelpPrompt.printNoDataInDataBase();
         } else {
             HelpPrompt.printSpecifyIPOrGroupOrAllForDelete();
@@ -144,17 +144,16 @@ class ActionForChoiceNumber {
                     HelpPrompt.printAskClearTable();
                     String ask_clear_all_server = getInputContent();
                     if ("y".equals(ask_clear_all_server) || "Y".equals(ask_clear_all_server)){
-                        operateDataBase.clearAllServerInfoFromTable();
-                        HelpPrompt.printClearTableSucessful();
+                        serverInfoDAO.deleteAll();
                     } else {
                         HelpPrompt.printNothingHappen();
                     }
                 } else {
                     for (String ip_or_group : delete_ip_group){
                         if (FunctionKit.checkStringIsIP(ip_or_group)){
-                            operateDataBase.deleteDataPassIP(ip_or_group);
+                            serverInfoDAO.deleteByIP(ip_or_group);
                         } else {
-                            operateDataBase.deleteDataPassGroup(ip_or_group);
+                            serverInfoDAO.deleteByServerGroup(ip_or_group);
                         }
                     }
                 }
@@ -164,8 +163,8 @@ class ActionForChoiceNumber {
 
 
     /** 为连接服务器做准备 */
-    void connectServerForSSHSFTP(OperateDataBase operateDataBase,String ssh_sftp){
-        if (operateDataBase.isTableNull()){
+    void connectServerForSSHSFTP(ServerInfoDAO serverInfoDAO,String ssh_sftp){
+        if (serverInfoDAO.queryAll().size() == 0){
             HelpPrompt.printNoDataInDataBase();
         } else {
             HelpPrompt.printListIPOrGroupOrAllForExec();
@@ -173,41 +172,38 @@ class ActionForChoiceNumber {
             if (! FunctionKit.checkStringLengthIsZero(ask_server)){
                 HelpPrompt.printInputError();
             } else {
-                if (operateDataBase.isTableNull()){
-                    HelpPrompt.printNoDataInDataBase();
+                String ip_or_group_array[] = ask_server.split("\\s+");
+                List<ServerInfo> objects = new ArrayList<ServerInfo>();
+                boolean check_occur_error = false;
+                if (ip_or_group_array.length == 1 && "all".equals(ip_or_group_array[0])){
+                    objects = serverInfoDAO.queryAll();
                 } else {
-                    String ip_or_group_array[] = ask_server.split("\\s+");
-                    HashMap<String,Object> servers_map = new HashMap<String, Object>();
-                    boolean check_occur_error = false;
-                    if (ip_or_group_array.length == 1 && "all".equals(ip_or_group_array[0])){
-                        servers_map = operateDataBase.selectAllServer();
-                    } else {
-                        for (String ip_or_group : ip_or_group_array){
-                            if (FunctionKit.checkStringIsIP(ip_or_group)){
-                                if (operateDataBase.isIPExists(ip_or_group)){
-                                    servers_map.putAll(operateDataBase.selectIP(ip_or_group));
-                                } else {
-                                    HelpPrompt.printIpOrGroupNotExists(ip_or_group);
-                                }
-                            } else if (operateDataBase.isGroupExists(ip_or_group)) {
-                                servers_map.putAll(operateDataBase.selectGroup(ip_or_group));
+                    for (String ip_or_group : ip_or_group_array){
+                        if (FunctionKit.checkStringIsIP(ip_or_group)){
+                            List<ServerInfo> result = serverInfoDAO.queryAllFieldByIP(ip_or_group);
+                            if (result.size() != 0){
+                                objects.addAll(result);
                             } else {
                                 HelpPrompt.printIpOrGroupNotExists(ip_or_group);
-                                check_occur_error = true;
                             }
+                        } else if (serverInfoDAO.queryAllFieldByServerGroup(ip_or_group).size() != 0) {
+                            objects.addAll(serverInfoDAO.queryAllFieldByServerGroup(ip_or_group));
+                        } else {
+                            HelpPrompt.printIpOrGroupNotExists(ip_or_group);
+                            check_occur_error = true;
                         }
                     }
-                    if (! check_occur_error){
-                        WriteLog writeLog = new WriteLog();
-                        if ("ssh".equals(ssh_sftp)){
-                            SessionPool.setSsh_connection_pool(new HashMap<String, Object>());
-                            ExecCommand.setWriteLog(writeLog);
-                            ConnectServer.setWriteLog(writeLog);
-                            loopGetCommandForExec(writeLog,servers_map);
-                        } else {
-                            SessionPool.setSftp_connection_pool(new HashMap<String, Object>());
-                            System.out.println("SFTP");
-                        }
+                }
+                if (! check_occur_error){
+                    WriteLog writeLog = new WriteLog();
+                    if ("ssh".equals(ssh_sftp)){
+                        SessionPool.setSsh_connection_pool(new HashMap<String, Object>());
+                        ExecCommand.setWriteLog(writeLog);
+                        ConnectServer.setWriteLog(writeLog);
+                        loopGetCommandForExec(writeLog,objects);
+                    } else {
+                        SessionPool.setSftp_connection_pool(new HashMap<String, Object>());
+                        System.out.println("SFTP");
                     }
                 }
             }
@@ -216,7 +212,7 @@ class ActionForChoiceNumber {
 
 
     /** 循环从命令行获取命令用于执行 */
-    void loopGetCommandForExec(WriteLog writeLog,HashMap<String,Object> servers_map){
+    void loopGetCommandForExec(WriteLog writeLog,List<ServerInfo> objects){
         HelpPrompt.printAskExecCommand();
         String command = getInputContent();
         if (! FunctionKit.checkStringLengthIsZero(command)) {
@@ -234,6 +230,7 @@ class ActionForChoiceNumber {
             }
         } else {
             writeLog.writeCommand(command);
+
             //设置要执行的命令
             if (FunctionKit.checkCommandIsForceDeleteRootDirectory(command)){
                 HelpPrompt.printYouCanntExecThisCommand();
@@ -243,14 +240,14 @@ class ActionForChoiceNumber {
                 HashMap<String, Object> ssh_connection_pool = SessionPool.getSsh_connection_pool();
                 int ssh_connection_pool_size = ssh_connection_pool.size();
                 if (ssh_connection_pool_size == 0){
-                    multiThread.startMultiThread("new",servers_map);  //多线程执行
+                    multiThread.startMultiThread(objects);  //新建会话多线程执行
                 } else {
-                    multiThread.startMultiThread("session",ssh_connection_pool); //使用连接池 多线程执行
+                    multiThread.startMultiThread(ssh_connection_pool); //使用连接池 多线程执行
                 }
             }
 
             //递归调用自身获取命令执行
-            loopGetCommandForExec(writeLog,servers_map);
+            loopGetCommandForExec(writeLog,objects);
         }
     }
 }
