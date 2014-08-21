@@ -114,9 +114,6 @@ class ExecCommand extends ConnectServer implements Runnable{
             String result_string = result.toString();
             writeLog.writeCommandResult(result_string);
             HelpPrompt.printInfo(result_string);
-            if (channelExec.isConnected()){
-                System.out.println("连接还是连接状态");
-            }
 
         } catch (IOException e){
             HelpPrompt.printInfo(e.getMessage());
@@ -124,11 +121,6 @@ class ExecCommand extends ConnectServer implements Runnable{
             HelpPrompt.printInfo(e.getMessage());
         } catch (JSchException e){
             HelpPrompt.printInfo(e.getMessage());
-        } finally {
-            if (channelExec != null && channelExec.isConnected()){
-                channelExec.disconnect();
-                System.out.println("连接已关闭");
-            }
         }
     }
 }
