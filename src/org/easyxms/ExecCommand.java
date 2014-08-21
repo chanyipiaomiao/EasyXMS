@@ -82,15 +82,17 @@ class ExecCommand extends ConnectServer implements Runnable{
      */
     public void execCommandGetResult(Session session){
         StringBuilder result = new StringBuilder();
-        result.append(String.format("======== [ %s ] Execute Command: < %s >, The result is :\n",ip,command));
+        result.append(String.format("======== [ %s ] execute Command: ' %s ', The Result is:\n",ip,command));
+        ChannelExec channelExec = null;
         try {
-            ChannelExec channelExec = (ChannelExec)session.openChannel("exec");
+            channelExec = (ChannelExec)session.openChannel("exec");
             channelExec.setEnv("LC_MESSAGES","en_US.UTF-8");
             channelExec.setCommand(command);
             BufferedReader exec_result = new BufferedReader(new InputStreamReader(channelExec.getInputStream()));
             BufferedReader error_result = new BufferedReader(new InputStreamReader(channelExec.getErrStream()));
             channelExec.connect();
             Thread.sleep(SettingInfo.getSleep_time());
+            int result_start = result.length();
 
             //得到标准输出
             while (exec_result.ready()){
@@ -104,15 +106,29 @@ class ExecCommand extends ConnectServer implements Runnable{
                 result.append("\n");
             }
 
+            int result_stop = result.length();
+            if (result_stop == result_start && channelExec.getExitStatus() == 0){
+                result.append("Command execute ... OK\n");
+            }
+
+            String result_string = result.toString();
+            writeLog.writeCommandResult(result_string);
+            HelpPrompt.printInfo(result_string);
+            if (channelExec.isConnected()){
+                System.out.println("连接还是连接状态");
+            }
+
         } catch (IOException e){
             HelpPrompt.printInfo(e.getMessage());
         } catch (InterruptedException e){
             HelpPrompt.printInfo(e.getMessage());
         } catch (JSchException e){
             HelpPrompt.printInfo(e.getMessage());
+        } finally {
+            if (channelExec != null && channelExec.isConnected()){
+                channelExec.disconnect();
+                System.out.println("连接已关闭");
+            }
         }
-        String result_string = result.toString();
-        writeLog.writeCommandResult(result_string);
-        HelpPrompt.printInfo(result_string);
     }
 }

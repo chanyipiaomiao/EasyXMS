@@ -20,7 +20,9 @@ class MultiThread{
      */
     public void startMultiThread(List<ServerInfo> objects){
 
-        CountDownLatch wait_thread_run_end = new CountDownLatch(objects.size());
+        long start_time = System.currentTimeMillis();
+        int host_num = objects.size();
+        CountDownLatch wait_thread_run_end = new CountDownLatch(host_num);
         ExecCommand.setCountDownLatch(wait_thread_run_end); //设置线程同步计数器的数目
 
         //初始化用于存放线程的列表
@@ -32,6 +34,9 @@ class MultiThread{
         }
 
         threadControl(threadArrayList,wait_thread_run_end);
+
+        long end_time = System.currentTimeMillis();
+        HelpPrompt.printTime(host_num,(end_time-start_time)/1000);
     }
 
 
@@ -41,7 +46,9 @@ class MultiThread{
      */
     public void startMultiThread(HashMap<String, Session> session_pool){
 
-        CountDownLatch wait_thread_run_end = new CountDownLatch(session_pool.size());
+        long start_time = System.currentTimeMillis();
+        int host_num = session_pool.size();
+        CountDownLatch wait_thread_run_end = new CountDownLatch(host_num);
         ExecCommand.setCountDownLatch(wait_thread_run_end); //设置线程同步计数器的数目
 
         //初始化用于存放线程的列表
@@ -59,6 +66,9 @@ class MultiThread{
         }
 
         threadControl(threadArrayList,wait_thread_run_end);
+
+        long end_time = System.currentTimeMillis();
+        HelpPrompt.printTime(host_num,(end_time-start_time)/1000);
     }
 
 
