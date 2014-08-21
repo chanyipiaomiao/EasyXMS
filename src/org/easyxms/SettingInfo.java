@@ -7,6 +7,9 @@ import java.io.IOException;
 import java.util.Properties;
 
 
+/**
+ * 设置信息类
+ */
 class SettingInfo {
 
     private static int enable_http_proxy = 0;
@@ -34,6 +37,10 @@ class SettingInfo {
         return properties;
     }
 
+
+    /**
+     * 读取配置文件并设置
+     */
     public static void settingInfo(){
 
         Properties properties = getConfigureFromPropertiesFile();

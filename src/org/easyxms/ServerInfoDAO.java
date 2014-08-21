@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+/**
+ * ServerInfo数据库访问对象类
+ */
 class ServerInfoDAO {
 
 

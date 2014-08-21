@@ -14,21 +14,7 @@ class ServerInfo {
     private String password = null;
     private int port = 22;
 
-    ServerInfo(){
-
-    }
-
-    ServerInfo(String ip){
-        this.ip = ip;
-    }
-
-    ServerInfo(String server_group, String username,
-               String password,int port) {
-        this.server_group = server_group;
-        this.username = username;
-        this.port = port;
-        this.password = password;
-    }
+    ServerInfo(){ }
 
     ServerInfo(String ip, String server_group,
                String username, String password, int port) {
@@ -37,14 +23,6 @@ class ServerInfo {
         this.password = password;
         this.username = username;
         this.port = port;
-    }
-
-
-    @Override
-    public String toString() {
-        return String.format("%s %s %s %s %d",this.ip,this.server_group,
-                EncryptDecryptPassword.Decrypt(this.username),
-                EncryptDecryptPassword.Decrypt(this.password),this.port);
     }
 
 
@@ -88,4 +66,12 @@ class ServerInfo {
         this.port = port;
     }
 
+
+    @Override
+    public String toString() {
+        return String.format("%s %s %s %s %d",this.ip,this.server_group,
+                EncryptDecryptPassword.Decrypt(this.username),
+                EncryptDecryptPassword.Decrypt(this.password),this.port);
+    }
 }
+

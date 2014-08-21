@@ -10,8 +10,9 @@ import java.io.InputStreamReader;
 import java.util.concurrent.CountDownLatch;
 
 
-
-/** 执行命令类 继承ConnectServer类 实现Runnable接口 */
+/**
+ * 执行命令类 继承ConnectServer类 实现Runnable接口
+ */
 class ExecCommand extends ConnectServer implements Runnable{
 
     private static String command = null;
@@ -69,7 +70,7 @@ class ExecCommand extends ConnectServer implements Runnable{
         Session session = super.connectServerOpenSession();
         if (session.isConnected()){
             //把session会话放到 session连接池中，以备下一次使用
-            SessionPool.getSsh_connection_pool().put(ip,new ConnectionObject(session));
+            SessionPool.getSsh_connection_pool().put(ip,session);
             execCommandGetResult(session);
         }
     }

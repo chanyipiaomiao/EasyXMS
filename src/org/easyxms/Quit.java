@@ -3,7 +3,9 @@ package org.easyxms;
 
 class Quit {
 
-    /** 退出方法 */
+    /**
+     * 退出方法
+     */
     public static void quit(){
         HelpPrompt.printAskQuit();
         try {

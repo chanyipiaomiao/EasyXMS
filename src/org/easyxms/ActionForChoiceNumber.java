@@ -1,18 +1,28 @@
 package org.easyxms;
 
 
+import com.jcraft.jsch.Session;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 
+
+/**
+ * 按对应的数字执行相对应的动作
+ */
 class ActionForChoiceNumber {
 
-    /** 从命令行读取输入 */
+
+    /**
+     * 从命令行读取输入
+     * @return 一个字符串
+     */
     String getInputContent(){
         GetInput getInput = new GetInput();
         return getInput.getInputFromStandardInput();
     }
+
 
     /**
      * 把字符串转换为一个对象
@@ -40,7 +50,10 @@ class ActionForChoiceNumber {
     }
 
 
-    /** 从命令行增加一台服务器信息 */
+    /**
+     * 从命令行增加一台服务器信息
+     * @param serverInfoDAO  ServerInfo数据库访问对象
+     */
     void addServerFromCommandLine(ServerInfoDAO serverInfoDAO){
 
         HelpPrompt.printAddServer();
@@ -68,7 +81,10 @@ class ActionForChoiceNumber {
     }
 
 
-    /** 从Excel文件中添加服务器信息 */
+    /**
+     * 从Excel文件中添加服务器信息
+     * @param serverInfoDAO ServerInfo数据库访问对象
+     */
     void addServerFromExcelFile(ServerInfoDAO serverInfoDAO){
         HelpPrompt.printExcelFilePath();
         String ask_excel_file = getInputContent();
@@ -84,7 +100,10 @@ class ActionForChoiceNumber {
     }
 
 
-    /** 列出数据库中的服务器信息（IP Group） */
+    /**
+     * 列出数据库中的服务器信息（IP Group）
+     * @param serverInfoDAO  ServerInfo数据库访问对象
+     */
     void listIPGroupFromDatabase(ServerInfoDAO serverInfoDAO){
         if (serverInfoDAO.queryAll().size() == 0){
             HelpPrompt.printNoDataInDataBase();
@@ -116,7 +135,10 @@ class ActionForChoiceNumber {
     }
 
 
-    /** 列出数据库中的分组 */
+    /**
+     * 列出数据库中的分组
+     * @param serverInfoDAO ServerInfo数据库访问对象
+     */
     void listGroupFromDatabase(ServerInfoDAO serverInfoDAO){
         if (serverInfoDAO.queryAll().size() == 0){
             HelpPrompt.printNoDataInDataBase();
@@ -129,7 +151,10 @@ class ActionForChoiceNumber {
     }
 
 
-    /** 删除指定的服务器信息 */
+    /**
+     * 删除指定的服务器信息
+     * @param serverInfoDAO  ServerInfo数据库访问对象
+     */
     void deleteServerInfoFromDatabase(ServerInfoDAO serverInfoDAO){
         if (serverInfoDAO.queryAll().size() == 0){
             HelpPrompt.printNoDataInDataBase();
@@ -162,7 +187,11 @@ class ActionForChoiceNumber {
     }
 
 
-    /** 为连接服务器做准备 */
+    /**
+     * 为连接服务器做准备
+     * @param serverInfoDAO  ServerInfo数据库访问对象
+     * @param ssh_sftp 用来标识连接的动作 是 ssh 还是 sftp
+     */
     void connectServerForSSHSFTP(ServerInfoDAO serverInfoDAO,String ssh_sftp){
         if (serverInfoDAO.queryAll().size() == 0){
             HelpPrompt.printNoDataInDataBase();
@@ -197,12 +226,12 @@ class ActionForChoiceNumber {
                 if (! check_occur_error){
                     WriteLog writeLog = new WriteLog();
                     if ("ssh".equals(ssh_sftp)){
-                        SessionPool.setSsh_connection_pool(new HashMap<String, Object>());
+                        SessionPool.setSsh_connection_pool(new HashMap<String, Session>());
                         ExecCommand.setWriteLog(writeLog);
                         ConnectServer.setWriteLog(writeLog);
                         loopGetCommandForExec(writeLog,objects);
                     } else {
-                        SessionPool.setSftp_connection_pool(new HashMap<String, Object>());
+                        SessionPool.setSftp_connection_pool(new HashMap<String, Session>());
                         System.out.println("SFTP");
                     }
                 }
@@ -211,7 +240,11 @@ class ActionForChoiceNumber {
     }
 
 
-    /** 循环从命令行获取命令用于执行 */
+    /**
+     * 循环从命令行获取命令用于执行
+     * @param writeLog 用来写日志的对象
+     * @param objects ServerInfo对象列表
+     */
     void loopGetCommandForExec(WriteLog writeLog,List<ServerInfo> objects){
         HelpPrompt.printAskExecCommand();
         String command = getInputContent();
@@ -219,15 +252,16 @@ class ActionForChoiceNumber {
             HelpPrompt.printInputError();
         } else if ("q".equals(command) || "Q".equals(command)){
             HelpPrompt.printExitExecCommand();
-            HashMap<String, Object> ssh_connection_pool = SessionPool.getSsh_connection_pool();
+            HashMap<String, Session> ssh_connection_pool = SessionPool.getSsh_connection_pool();
             if (ssh_connection_pool.size() != 0){
                 for (String ip : ssh_connection_pool.keySet()){
-                    ConnectionObject connectionObject = (ConnectionObject)ssh_connection_pool.get(ip);
-                    if (connectionObject.getSession().isConnected()){
-                        connectionObject.getSession().disconnect();
+                    Session session = ssh_connection_pool.get(ip);
+                    if (session.isConnected()){
+                        session.disconnect();
                     }
                 }
             }
+            ssh_connection_pool.clear();
         } else {
             writeLog.writeCommand(command);
 
@@ -237,7 +271,7 @@ class ActionForChoiceNumber {
             } else {
                 ExecCommand.setCommand(command);
                 MultiThread multiThread = new MultiThread();
-                HashMap<String, Object> ssh_connection_pool = SessionPool.getSsh_connection_pool();
+                HashMap<String, Session> ssh_connection_pool = SessionPool.getSsh_connection_pool();
                 int ssh_connection_pool_size = ssh_connection_pool.size();
                 if (ssh_connection_pool_size == 0){
                     multiThread.startMultiThread(objects);  //新建会话多线程执行

@@ -3,10 +3,12 @@ package org.easyxms;
 
 class ChoiceNumber {
 
+
     private String cmd = null;
     private GetInput getInput = null;
     private ServerInfoDAO serverInfoDAO = null;
     private ActionForChoiceNumber action = null;
+
 
     ChoiceNumber() {
         getInput = new GetInput();
@@ -14,7 +16,10 @@ class ChoiceNumber {
         action = new ActionForChoiceNumber();
     }
 
-    /** 循环得到输入的命令 */
+
+    /**
+     * 循环得到输入的命令
+     */
     public void loopGetValue(){
         HelpPrompt.printWelcomeInfo();
         while (setInputValue()){
@@ -41,7 +46,10 @@ class ChoiceNumber {
     }
 
 
-    /** 显示提示符等到用户输入*/
+    /**
+     * 显示提示符等到用户输入
+     * @return true
+     */
     public boolean setInputValue(){
         HelpPrompt.printProgramName();
         cmd = getInput.getInputFromStandardInput();

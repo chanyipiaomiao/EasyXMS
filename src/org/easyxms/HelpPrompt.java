@@ -1,6 +1,9 @@
 package org.easyxms;
 
 
+/**
+ * 打印信息类
+ */
 class HelpPrompt {
 
     private static String command_prompt[] = {"1    Add  Server From < Command Line >",

@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 
+/**
+ * 多线程类
+ */
 class MultiThread{
 
 
@@ -36,7 +39,7 @@ class MultiThread{
      * 使用已经连接的会话开始多线程
      * @param session_pool 会话池
      */
-    public void startMultiThread(HashMap<String, Object> session_pool){
+    public void startMultiThread(HashMap<String, Session> session_pool){
 
         CountDownLatch wait_thread_run_end = new CountDownLatch(session_pool.size());
         ExecCommand.setCountDownLatch(wait_thread_run_end); //设置线程同步计数器的数目
@@ -47,7 +50,7 @@ class MultiThread{
         ExecCommand.setIs_use_session_pool(1);
 
         for (String ip : session_pool.keySet()){
-            Session session = ((ConnectionObject)session_pool.get(ip)).getSession();
+            Session session = session_pool.get(ip);
             if (session.isConnected()){
                 threadArrayList.add(new Thread(new ExecCommand(ip,session)));
             } else {
