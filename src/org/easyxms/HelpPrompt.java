@@ -74,7 +74,7 @@ class HelpPrompt {
      * 显示增加服务器提示
      */
     public static void printAddServer(){
-        System.out.print("Enter Server Like '1.1.1.1 web root 123 22': ");
+        System.out.print("e.g. 1.1.1.1 web root 123 22;2.2.2.2 db root 123 22\n>>>>>");
     }
 
 
