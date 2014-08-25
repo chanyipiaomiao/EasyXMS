@@ -244,6 +244,6 @@ class HelpPrompt {
      * @param time 执行的时间
      */
     public static void printTime(int host_num,float time){
-        System.out.printf("The Total %d Host, Time-Consuming: %f s.\n",host_num,time);
+        System.out.printf("The Total %d Host, Time: %f s.\n",host_num,time);
     }
 }

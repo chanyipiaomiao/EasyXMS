@@ -31,9 +31,11 @@ class ConnectServer{
         Session session = null;
         String ip = serverInfo.getIp();
         try {
-            session = jSch.getSession(serverInfo.getUsername(),ip,serverInfo.getPort());
-            session.setPassword(serverInfo.getPassword());
+            session = jSch.getSession(EncryptDecryptPassword.Decrypt(serverInfo.getUsername()),ip,serverInfo.getPort());
             session.setConfig("StrictHostKeyChecking", "no");
+            session.setConfig("GSSAPIAuthentication", "no");
+            session.setConfig("UseDNS", "no");
+            session.setPassword(EncryptDecryptPassword.Decrypt(serverInfo.getPassword()));
             session.setTimeout(SettingInfo.getConnect_timeout());
             if (SettingInfo.getEnable_http_proxy() == 1){
                 session.setProxy(new ProxyHTTP(SettingInfo.getHttp_proxy_server(),SettingInfo.getHttp_proxy_port()));
