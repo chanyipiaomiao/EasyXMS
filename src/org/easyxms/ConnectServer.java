@@ -32,16 +32,16 @@ class ConnectServer{
         String ip = serverInfo.getIp();
         try {
             session = jSch.getSession(EncryptDecryptPassword.Decrypt(serverInfo.getUsername()),ip,serverInfo.getPort());
-            session.setPassword(EncryptDecryptPassword.Decrypt(serverInfo.getPassword()));
-            session.setTimeout(SettingInfo.getConnect_timeout());
             session.setConfig("StrictHostKeyChecking", "no");
-            session.setConfig("GSSAPIAuthentication", "no");
+            session.setConfig("userauth.gssapi-with-mic", "no");
+            session.setTimeout(SettingInfo.getConnect_timeout());
+            session.setPassword(EncryptDecryptPassword.Decrypt(serverInfo.getPassword()));
             if (SettingInfo.getEnable_http_proxy() == 1){
                 session.setProxy(new ProxyHTTP(SettingInfo.getHttp_proxy_server(),SettingInfo.getHttp_proxy_port()));
             }
             session.connect();
         } catch (JSchException e){
-            writeLog.writeCommandResult("\n" + HelpPrompt.printConnectError(ip,e.getMessage()));
+            writeLog.writeCommandResult("\n" + HelpPrompt.printConnectError(ip,e.getMessage()) + "\n");
         }
         return session;
     }
