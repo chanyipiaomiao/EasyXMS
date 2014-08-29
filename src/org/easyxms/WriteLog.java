@@ -11,6 +11,7 @@ class WriteLog {
 
     private static Log log_command = LogFactory.getLog("command_history");
     private static Log log_commmand_result = LogFactory.getLog("command_result");
+    private static Log log_upload_file = LogFactory.getLog("upload_file");
 
 
     /**
@@ -28,5 +29,14 @@ class WriteLog {
      */
     public void writeCommandResult(String result){
         log_commmand_result.info(result);
+    }
+
+
+    /**
+     * 写 文件上传记录到文件
+     * @param file_upload 文件上传结果的字符串
+     */
+    public void writeFileUpload(String file_upload){
+        log_upload_file.info(file_upload);
     }
 }

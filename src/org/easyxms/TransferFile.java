@@ -1,6 +1,8 @@
 package org.easyxms;
 
 
-public interface TransferFile {
+import com.jcraft.jsch.Session;
 
+public interface TransferFile {
+    public void transfer(Session session);
 }

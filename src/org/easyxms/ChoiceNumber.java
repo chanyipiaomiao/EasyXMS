@@ -38,7 +38,7 @@ class ChoiceNumber {
             } else if ("6".equals(cmd)){
                 action.connectServerForSSHSFTP(serverInfoDAO,"ssh");
             } else if ("7".equals(cmd)){
-                System.out.println("上传文件");
+                action.connectServerForSSHSFTP(serverInfoDAO,"sftp");
             } else if ("8".equals(cmd)){
                 System.out.println("清屏");
             }

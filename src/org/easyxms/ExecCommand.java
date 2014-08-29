@@ -83,9 +83,8 @@ class ExecCommand extends ConnectServer implements Runnable{
     public void execCommandGetResult(Session session){
         StringBuilder result = new StringBuilder();
         result.append(String.format("======== [ %s ] execute Command: ' %s ', The Result is:\n",ip,command));
-        ChannelExec channelExec = null;
         try {
-            channelExec = (ChannelExec)session.openChannel("exec");
+            ChannelExec channelExec = (ChannelExec)session.openChannel("exec");
             channelExec.setEnv("LC_MESSAGES","en_US.UTF-8");
             channelExec.setCommand(command);
             BufferedReader exec_result = new BufferedReader(new InputStreamReader(channelExec.getInputStream()));

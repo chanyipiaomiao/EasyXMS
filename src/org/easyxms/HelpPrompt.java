@@ -246,4 +246,9 @@ class HelpPrompt {
     public static void printTime(int host_num,float time){
         System.out.printf("The Total %d Host, Time: %f s.\n",host_num,time);
     }
+
+
+    public static void printFilePath(){
+        System.out.println("Enter <Local> File Path and <Remote> dir #");
+    }
 }

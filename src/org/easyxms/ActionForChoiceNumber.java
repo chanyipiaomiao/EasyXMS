@@ -2,6 +2,7 @@ package org.easyxms;
 
 
 import com.jcraft.jsch.Session;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -232,7 +233,9 @@ class ActionForChoiceNumber {
                         loopGetCommandForExec(writeLog,objects);
                     } else {
                         SessionPool.setSftp_connection_pool(new HashMap<String, Session>());
-                        System.out.println("SFTP");
+                        UploadFile.setWriteLog(writeLog);
+                        ConnectServer.setWriteLog(writeLog);
+                        uploadFile(writeLog,objects);
                     }
                 }
             }
@@ -274,7 +277,7 @@ class ActionForChoiceNumber {
                 HashMap<String, Session> ssh_connection_pool = SessionPool.getSsh_connection_pool();
                 int ssh_connection_pool_size = ssh_connection_pool.size();
                 if (ssh_connection_pool_size == 0){
-                    multiThread.startMultiThread(objects);  //新建会话多线程执行
+                    multiThread.startMultiThread(objects,"ssh");  //新建会话多线程执行
                 } else {
                     multiThread.startMultiThread(ssh_connection_pool); //使用连接池 多线程执行
                 }
@@ -282,6 +285,36 @@ class ActionForChoiceNumber {
 
             //递归调用自身获取命令执行
             loopGetCommandForExec(writeLog,objects);
+        }
+    }
+
+
+    /**
+     * 上传文件
+     * @param writeLog 用来写日志的对象
+     * @param objects ServerInfo对象列表
+     */
+    void uploadFile(WriteLog writeLog,List<ServerInfo> objects){
+        HelpPrompt.printFilePath();
+        String file_info = getInputContent();
+        if (! FunctionKit.checkStringLengthIsZero(file_info)){
+            HelpPrompt.printInputError();
+        } else {
+            String[] src_dst = file_info.split("\\s+");
+            String file = src_dst[0];
+            File src_file = new File(file);
+            if (src_file.exists() && src_file.isFile() ){
+                if (src_dst.length == 1){
+                    UploadFile.setSrc(file);
+                    UploadFile.setDst("/tmp");
+                    MultiThread multiThread = new MultiThread();
+                    multiThread.startMultiThread(objects,"sftp");
+                }
+            } else if (src_file.isDirectory()){
+                System.out.println("Oops.不支持上传目录!");
+            } else {
+                System.out.printf("啊哦. [ %s ] 不存在哦.",src_file);
+            }
         }
     }
 }

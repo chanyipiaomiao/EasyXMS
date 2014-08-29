@@ -18,23 +18,26 @@ class MultiThread{
      * 新建会话开始多线程
      * @param objects ServerInfo对象列表
      */
-    public void startMultiThread(List<ServerInfo> objects){
+    public void startMultiThread(List<ServerInfo> objects,String ssh_sftp){
 
         long start_time = System.currentTimeMillis();
         int host_num = objects.size();
         CountDownLatch wait_thread_run_end = new CountDownLatch(host_num);
-        ExecCommand.setCountDownLatch(wait_thread_run_end); //设置线程同步计数器的数目
-
-        //初始化用于存放线程的列表
-        ArrayList<Thread> threadArrayList = new ArrayList<Thread>();
-
-        ExecCommand.setIs_use_session_pool(0);
-        for (ServerInfo serverInfo : objects){
-            threadArrayList.add(new Thread(new ExecCommand(serverInfo)));
+        ArrayList<Thread> threadArrayList = new ArrayList<Thread>();             //初始化用于存放线程的列表
+        if ("ssh".equals(ssh_sftp)){
+            ExecCommand.setCountDownLatch(wait_thread_run_end); //设置线程同步计数器的数目
+            ExecCommand.setIs_use_session_pool(0);
+            for (ServerInfo serverInfo : objects){
+                threadArrayList.add(new Thread(new ExecCommand(serverInfo)));
+            }
+        } else {
+            UploadFile.setCountDownLatch(wait_thread_run_end);
+            UploadFile.setIs_use_session_pool(0);
+            for (ServerInfo serverInfo : objects){
+                threadArrayList.add(new Thread(new UploadFile(serverInfo)));
+            }
         }
-
         threadControl(threadArrayList,wait_thread_run_end);
-
         long end_time = System.currentTimeMillis();
         HelpPrompt.printTime(host_num,(end_time-start_time)/1000);
     }
@@ -53,9 +56,7 @@ class MultiThread{
 
         //初始化用于存放线程的列表
         ArrayList<Thread> threadArrayList = new ArrayList<Thread>();
-
         ExecCommand.setIs_use_session_pool(1);
-
         for (String ip : session_pool.keySet()){
             Session session = session_pool.get(ip);
             if (session.isConnected()){
@@ -64,9 +65,7 @@ class MultiThread{
                 HelpPrompt.printIPSessionAlreadyDisconnect(ip);
             }
         }
-
         threadControl(threadArrayList,wait_thread_run_end);
-
         long end_time = System.currentTimeMillis();
         HelpPrompt.printTime(host_num,(end_time-start_time)/1000);
     }
