@@ -20,16 +20,19 @@ class MultiThread{
      */
     public void startMultiThread(List<ServerInfo> objects,String ssh_sftp){
 
-        long start_time = System.currentTimeMillis();
+
         int host_num = objects.size();
         CountDownLatch wait_thread_run_end = new CountDownLatch(host_num);
         ArrayList<Thread> threadArrayList = new ArrayList<Thread>();             //初始化用于存放线程的列表
         if ("ssh".equals(ssh_sftp)){
+            long start_time = System.currentTimeMillis();
             ExecCommand.setCountDownLatch(wait_thread_run_end); //设置线程同步计数器的数目
             ExecCommand.setIs_use_session_pool(0);
             for (ServerInfo serverInfo : objects){
                 threadArrayList.add(new Thread(new ExecCommand(serverInfo)));
             }
+            long end_time = System.currentTimeMillis();
+            HelpPrompt.printTime(host_num,(end_time-start_time)/1000);
         } else {
             UploadFile.setCountDownLatch(wait_thread_run_end);
             UploadFile.setIs_use_session_pool(0);
@@ -38,8 +41,6 @@ class MultiThread{
             }
         }
         threadControl(threadArrayList,wait_thread_run_end);
-        long end_time = System.currentTimeMillis();
-        HelpPrompt.printTime(host_num,(end_time-start_time)/1000);
     }
 
 
