@@ -2,7 +2,6 @@ package org.easyxms;
 
 
 import com.jcraft.jsch.*;
-
 import java.io.File;
 import java.util.concurrent.CountDownLatch;
 
@@ -10,6 +9,7 @@ import java.util.concurrent.CountDownLatch;
 class UploadFile extends ConnectServer implements TransferFile,Runnable {
 
     private String ip = null;
+    private Session session = null;
     private static String src = null;
     private static String dst = null;
     private static int is_use_session_pool = 0;  //是否使用session会话池
@@ -43,40 +43,34 @@ class UploadFile extends ConnectServer implements TransferFile,Runnable {
     }
 
 
-    /**
-     * 打开执行命令通道
-     */
-    public void openExecCommandChannel(){
-        Session session = super.connectServerOpenSession();
-        if (session.isConnected()){
-            //把session会话放到 session连接池中，以备下一次使用
-            SessionPool.getSftp_connection_pool().put(ip, session);
-            this.transfer(session);
-        }
-    }
-
     @Override
     public void run() {
         openExecCommandChannel();
         countDownLatch.countDown();
     }
 
+    /**
+     * 打开SFTP通道
+     */
+    public void openExecCommandChannel(){
+        session = super.connectServerOpenSession();
+        if (session.isConnected()){
+            //把session会话放到 session连接池中，以备下一次使用
+            SessionPool.getSftp_connection_pool().put(ip, session);
+            this.transfer();
+        }
+    }
+
 
     @Override
-    public void transfer(Session session) {
-        StringBuilder result = new StringBuilder();
+    public void transfer() {
         try {
             File src_file = new File(src);
             FileTransferProgressMonitor.setFilesize(src_file.length());
             ChannelSftp channelSftp = (ChannelSftp)session.openChannel("sftp");
             channelSftp.setEnv("LC_MESSAGES", "en_US.UTF-8");
             channelSftp.connect();
-
-            long start_time = System.currentTimeMillis();
             channelSftp.put(src, dst, new FileTransferProgressMonitor());
-            long end_time = System.currentTimeMillis();
-            System.out.println(" Time: " + (end_time - start_time)/1000 + "s.");
-
         } catch (JSchException e){
             HelpPrompt.printInfo(e.getMessage());
         } catch (SftpException e){

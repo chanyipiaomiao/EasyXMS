@@ -239,16 +239,9 @@ class HelpPrompt {
 
 
     /**
-     * 打印程序执行时间
-     * @param host_num 主机的数量
-     * @param time 执行的时间
+     * 显示输入文件路径
      */
-    public static void printTime(int host_num,float time){
-        System.out.printf("The Total %d Host, Time: %f s.\n",host_num,time);
-    }
-
-
     public static void printFilePath(){
-        System.out.println("Enter <Local> File Path and <Remote> dir #");
+        System.out.print("Enter <Local> File Path and <Remote> dir :");
     }
 }
