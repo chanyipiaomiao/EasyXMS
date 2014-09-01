@@ -26,9 +26,9 @@ class ChoiceNumber {
             if ("?".equals(cmd) || "？".equals(cmd)){
                 HelpPrompt.printPrompt();
             } else if ("1".equals(cmd)){
-                action.addServerFromCommandLine(serverInfoDAO);
+                action.connectServerForSSHSFTP(serverInfoDAO,"ssh");
             } else if ("2".equals(cmd)){
-                action.addServerFromExcelFile(serverInfoDAO);
+                action.connectServerForSSHSFTP(serverInfoDAO,"sftp");
             } else if ("3".equals(cmd)){
                 action.listIPGroupFromDatabase(serverInfoDAO);
             } else if ("4".equals(cmd)){
@@ -36,9 +36,9 @@ class ChoiceNumber {
             } else if ("5".equals(cmd)){
                 action.deleteServerInfoFromDatabase(serverInfoDAO);
             } else if ("6".equals(cmd)){
-                action.connectServerForSSHSFTP(serverInfoDAO,"ssh");
+                action.addServerFromCommandLine(serverInfoDAO);
             } else if ("7".equals(cmd)){
-                action.connectServerForSSHSFTP(serverInfoDAO,"sftp");
+                action.addServerFromExcelFile(serverInfoDAO);
             } else if ("8".equals(cmd)){
                 System.out.println("清屏");
             }

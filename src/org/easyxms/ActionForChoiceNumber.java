@@ -276,12 +276,14 @@ class ActionForChoiceNumber {
                 MultiThread multiThread = new MultiThread();
                 HashMap<String, Session> ssh_connection_pool = SessionPool.getSsh_connection_pool();
                 int ssh_connection_pool_size = ssh_connection_pool.size();
+                long start_time = System.currentTimeMillis();
                 if (ssh_connection_pool_size == 0){
                     multiThread.startMultiThread(objects,"ssh");  //新建会话多线程执行
                 } else {
                     multiThread.startMultiThread(ssh_connection_pool); //使用连接池 多线程执行
                 }
-
+                long end_time = System.currentTimeMillis();
+                System.out.printf("Servers Number: %d ,Execute Time: %ds\n",objects.size(),(end_time - start_time)/1000);
             }
 
             //递归调用自身获取命令执行
@@ -314,7 +316,7 @@ class ActionForChoiceNumber {
             } else if (src_file.isDirectory()){
                 System.out.println("Oops.不支持上传目录!");
             } else {
-                System.out.printf("啊哦. [ %s ] 不存在哦.",src_file);
+                System.out.printf("啊哦. [ %s ] 不存在哦.\n",src_file);
             }
         }
     }

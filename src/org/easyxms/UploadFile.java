@@ -57,11 +57,14 @@ class UploadFile extends ConnectServer implements TransferFile,Runnable {
         if (session.isConnected()){
             //把session会话放到 session连接池中，以备下一次使用
             SessionPool.getSftp_connection_pool().put(ip, session);
-            this.transfer();
+            transfer();
         }
     }
 
 
+    /**
+     * 上传文件
+     */
     @Override
     public void transfer() {
         try {
@@ -70,7 +73,8 @@ class UploadFile extends ConnectServer implements TransferFile,Runnable {
             ChannelSftp channelSftp = (ChannelSftp)session.openChannel("sftp");
             channelSftp.setEnv("LC_MESSAGES", "en_US.UTF-8");
             channelSftp.connect();
-            channelSftp.put(src, dst, new FileTransferProgressMonitor());
+            channelSftp.put(src, dst, new FileTransferProgressMonitor(ip));
+            channelSftp.disconnect();
         } catch (JSchException e){
             HelpPrompt.printInfo(e.getMessage());
         } catch (SftpException e){
@@ -78,4 +82,3 @@ class UploadFile extends ConnectServer implements TransferFile,Runnable {
         }
     }
 }
-

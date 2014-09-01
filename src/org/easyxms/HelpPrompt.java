@@ -6,13 +6,13 @@ package org.easyxms;
  */
 class HelpPrompt {
 
-    private static String command_prompt[] = {"1    Add  Server From < Command Line >",
-                                              "2    Add  Server From < Excel File >",
+    private static String command_prompt[] = {"1    Execute  Command",
+                                              "2    Upload  File",
                                               "3    List  Servers From Database",
                                               "4    List  Groups From Database",
                                               "5    Delete  Server From Database",
-                                              "6    Execute  Command",
-                                              "7    Upload  File",
+                                              "6    Add  Server From < Command Line >",
+                                              "7    Add  Server From < Excel File >",
                                               "8    Clear Screen"};
 
 
