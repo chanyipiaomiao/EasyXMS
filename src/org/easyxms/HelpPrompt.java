@@ -182,7 +182,7 @@ class HelpPrompt {
      * 输出 选择 要执行命令的IP,分组,所有主机
      */
     public static void printListIPOrGroupOrAllForExec(){
-        System.out.print("Enter ( all|ip|group ) For Exec :");
+        System.out.print("Enter ( all|ip|group ) For ssh or sftp :");
     }
 
 
