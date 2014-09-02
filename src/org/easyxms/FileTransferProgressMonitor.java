@@ -31,7 +31,7 @@ class FileTransferProgressMonitor implements SftpProgressMonitor{
 
     @Override
     public void end() {
-        System.out.print("\nTransfer Completed.\n");
+        System.out.println();
     }
 
     public static void setFilesize(long filesize) {
