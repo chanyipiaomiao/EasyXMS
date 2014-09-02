@@ -24,7 +24,7 @@ class FileTransferProgressMonitor implements SftpProgressMonitor{
         transfered = transfered + count;
         DecimalFormat percent_format = new DecimalFormat("#.##");
         double percent = ((double)transfered * 100)/(double)filesize;
-        System.out.printf("\r%s %s %s%% Transfered: %d Total: %d", ip, "正在传输...",
+        System.out.printf("\r%s %s %s%% Transfered: %d Total: %d", ip, "Transferring...",
                 percent_format.format(percent), transfered, filesize);
         return true;
     }
