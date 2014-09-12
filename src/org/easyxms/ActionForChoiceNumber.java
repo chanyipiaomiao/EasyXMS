@@ -6,7 +6,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import jcurses.system.*;
 
 
 /**
@@ -235,7 +234,7 @@ class ActionForChoiceNumber {
                         SessionPool.setSftp_connection_pool(new HashMap<String, Session>());
                         UploadFile.setWriteLog(writeLog);
                         ConnectServer.setWriteLog(writeLog);
-                        uploadFile(writeLog,objects);
+                        uploadFile(objects);
                     }
                 }
             }
@@ -294,10 +293,9 @@ class ActionForChoiceNumber {
 
     /**
      * 上传文件
-     * @param writeLog 用来写日志的对象
      * @param objects ServerInfo对象列表
      */
-    void uploadFile(WriteLog writeLog,List<ServerInfo> objects){
+    void uploadFile(List<ServerInfo> objects){
         HelpPrompt.printFilePath();
         String file_info = getInputContent();
         if (! FunctionKit.checkStringLengthIsZero(file_info)){
@@ -316,7 +314,7 @@ class ActionForChoiceNumber {
             } else if (src_file.isDirectory()){
                 System.out.println("Oops.Not Support Directory!");
             } else {
-                System.out.printf("Oops. [ %s ] Not Exists.\n",src_file);
+                System.out.printf("aOo. [ %s ] Not Exists.\n",src_file);
             }
         }
     }
