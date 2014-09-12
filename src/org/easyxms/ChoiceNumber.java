@@ -40,7 +40,7 @@ class ChoiceNumber {
             } else if ("7".equals(cmd)){
                 action.addServerFromExcelFile(serverInfoDAO);
             } else if ("8".equals(cmd)){
-                System.out.println("清屏");
+                action.clearScreen();
             }
         }
     }

@@ -244,4 +244,15 @@ class HelpPrompt {
     public static void printFilePath(){
         System.out.print("Enter <Local> File Path and <Remote> dir :");
     }
+
+
+
+    /**
+     * 显示命令或者上传文件所花费的时间
+     * @param nums 服务器的数量
+     * @param time 命令或者上传文件所花费的时间
+     */
+    public static void printExecuteTime(int nums,long time){
+        System.out.printf("Servers Number: %d ,Execute Time: %ds\n",nums,time);
+    }
 }

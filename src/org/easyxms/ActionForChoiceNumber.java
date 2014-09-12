@@ -6,7 +6,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
+import jcurses.system.*;
 
 
 /**
@@ -283,7 +283,7 @@ class ActionForChoiceNumber {
                     multiThread.startMultiThread(ssh_connection_pool); //使用连接池 多线程执行
                 }
                 long end_time = System.currentTimeMillis();
-                System.out.printf("Servers Number: %d ,Execute Time: %ds\n",objects.size(),(end_time - start_time)/1000);
+                HelpPrompt.printExecuteTime(objects.size(),(end_time - start_time)/1000);
             }
 
             //递归调用自身获取命令执行
@@ -310,8 +310,13 @@ class ActionForChoiceNumber {
                 if (src_dst.length == 1){
                     UploadFile.setSrc(file);
                     UploadFile.setDst("/tmp");
+                    System.out.printf("File Size: %d B\n", src_file.length());
+                    long start_time = System.currentTimeMillis();
                     MultiThread multiThread = new MultiThread();
                     multiThread.startMultiThread(objects,"sftp");
+                    long end_time = System.currentTimeMillis();
+                    System.out.println();
+                    HelpPrompt.printExecuteTime(objects.size(),(end_time - start_time)/1000);
                 }
             } else if (src_file.isDirectory()){
                 System.out.println("Oops.不支持上传目录!");
@@ -319,6 +324,11 @@ class ActionForChoiceNumber {
                 System.out.printf("啊哦. [ %s ] 不存在哦.\n",src_file);
             }
         }
+    }
+
+
+    void clearScreen(){
+        Toolkit.clearScreen(new CharColor(CharColor.BLACK,CharColor.BLACK));
     }
 }
 

@@ -2,39 +2,41 @@ package org.easyxms;
 
 
 import com.jcraft.jsch.SftpProgressMonitor;
-import java.text.DecimalFormat;
 
 
 class FileTransferProgressMonitor implements SftpProgressMonitor{
 
-    private long transfered;
-    private static long filesize;
-    private String ip;
+    private static String str = "|/-\\";
 
-    FileTransferProgressMonitor(String ip) {
-        this.ip = ip;
-    }
 
+    /**
+     * 传输开始的时候执行
+     * @param op 标识是GET还是PUT
+     * @param src 源
+     * @param dst 目标
+     * @param file_length 文件的大小
+     */
     @Override
-    public void init(int op, String src, String dst, long file_length) {
-    }
+    public void init(int op, String src, String dst, long file_length) {}
 
+
+    /**
+     * 到目前为止已经传输了多少字节
+     * @param count 目前已经传输了多少字节
+     * @return true
+     */
     @Override
     public boolean count(long count) {
-        transfered = transfered + count;
-        DecimalFormat percent_format = new DecimalFormat("#.##");
-        double percent = ((double)transfered * 100)/(double)filesize;
-        System.out.printf("\r%s %s %s%% Transfered: %d Total: %d", ip, "Transferring...",
-                percent_format.format(percent), transfered, filesize);
+        System.out.printf("\rAll Servers is Transferring,Please Wait moment ... %s",
+                str.charAt((int)(Math.random()*str.length())));
         return true;
     }
 
-    @Override
-    public void end() {
-        System.out.println();
-    }
 
-    public static void setFilesize(long filesize) {
-        FileTransferProgressMonitor.filesize = filesize;
-    }
+    /**
+     * 传输结束的时候执行
+     */
+    @Override
+    public void end() {}
+
 }

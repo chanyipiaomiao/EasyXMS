@@ -68,12 +68,10 @@ class UploadFile extends ConnectServer implements TransferFile,Runnable {
     @Override
     public void transfer() {
         try {
-            File src_file = new File(src);
-            FileTransferProgressMonitor.setFilesize(src_file.length());
             ChannelSftp channelSftp = (ChannelSftp)session.openChannel("sftp");
             channelSftp.setEnv("LC_MESSAGES", "en_US.UTF-8");
             channelSftp.connect();
-            channelSftp.put(src, dst, new FileTransferProgressMonitor(ip));
+            channelSftp.put(src, dst, new FileTransferProgressMonitor());
             channelSftp.disconnect();
         } catch (JSchException e){
             HelpPrompt.printInfo(e.getMessage());
