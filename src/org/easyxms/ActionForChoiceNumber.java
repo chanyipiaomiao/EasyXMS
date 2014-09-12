@@ -307,28 +307,36 @@ class ActionForChoiceNumber {
             String file = src_dst[0];
             File src_file = new File(file);
             if (src_file.exists() && src_file.isFile() ){
-                if (src_dst.length == 1){
-                    UploadFile.setSrc(file);
-                    UploadFile.setDst("/tmp");
-                    System.out.printf("File Size: %d B\n", src_file.length());
-                    long start_time = System.currentTimeMillis();
-                    MultiThread multiThread = new MultiThread();
-                    multiThread.startMultiThread(objects,"sftp");
-                    long end_time = System.currentTimeMillis();
-                    System.out.println();
-                    HelpPrompt.printExecuteTime(objects.size(),(end_time - start_time)/1000);
+                int src_dst_len = src_dst.length;
+                if ( src_dst_len == 1){
+                    MultiThreadUploadFile(file,"/tmp",objects);
+                } else if (src_dst_len == 2){
+                    MultiThreadUploadFile(file,src_dst[1],objects);
                 }
             } else if (src_file.isDirectory()){
-                System.out.println("Oops.不支持上传目录!");
+                System.out.println("Oops.Not Support Directory!");
             } else {
-                System.out.printf("啊哦. [ %s ] 不存在哦.\n",src_file);
+                System.out.printf("Oops. [ %s ] Not Exists.\n",src_file);
             }
         }
     }
 
 
-    void clearScreen(){
-        Toolkit.clearScreen(new CharColor(CharColor.BLACK,CharColor.BLACK));
+    /**
+     * 多线程上传文件
+      * @param src_file 源文件
+     * @param remote_path 目标路径
+     * @param objects ServerInfo对象列表
+     */
+    private void MultiThreadUploadFile(String src_file,String remote_path,List<ServerInfo> objects){
+        UploadFile.setSrc(src_file);
+        UploadFile.setDst(remote_path);
+        HelpPrompt.printFileSizeAndRemotePath(src_file,remote_path);
+        long start_time = System.currentTimeMillis();
+        MultiThread multiThread = new MultiThread();
+        multiThread.startMultiThread(objects,"sftp");
+        long end_time = System.currentTimeMillis();
+        System.out.println();
+        HelpPrompt.printExecuteTime(objects.size(),(end_time - start_time)/1000);
     }
 }
-

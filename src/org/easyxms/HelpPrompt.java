@@ -1,6 +1,8 @@
 package org.easyxms;
 
 
+import java.io.File;
+
 /**
  * 打印信息类
  */
@@ -254,5 +256,15 @@ class HelpPrompt {
      */
     public static void printExecuteTime(int nums,long time){
         System.out.printf("Servers Number: %d ,Execute Time: %ds\n",nums,time);
+    }
+
+
+    /**
+     * 在上传文件是显示文件大小及远程路径
+     * @param src_file 源文件
+     * @param remote_path 目标路径
+     */
+    public static void printFileSizeAndRemotePath(String src_file,String remote_path){
+        System.out.printf("File Size: %d B,Remote Path: %s\n", (new File(src_file)).length(),remote_path);
     }
 }
