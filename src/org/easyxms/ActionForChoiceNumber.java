@@ -329,6 +329,9 @@ class ActionForChoiceNumber {
     private void MultiThreadUploadFile(String src_file,String remote_path,List<ServerInfo> objects){
         UploadFile.setSrc(src_file);
         UploadFile.setDst(remote_path);
+        if (! remote_path.startsWith("/")){
+            remote_path = "$HOME/" + remote_path;
+        }
         HelpPrompt.printFileSizeAndRemotePath(src_file,remote_path);
         long start_time = System.currentTimeMillis();
         MultiThread multiThread = new MultiThread();

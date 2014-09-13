@@ -72,6 +72,7 @@ class UploadFile extends ConnectServer implements TransferFile,Runnable {
             channelSftp.setEnv("LC_MESSAGES", "en_US.UTF-8");
             channelSftp.connect();
             channelSftp.put(src, dst, new FileTransferProgressMonitor());
+            dst=(dst.startsWith("/"))?dst:channelSftp.getHome() + "/" + dst;
             writeLog.writeFileUpload(String.format("Upload %s To %s@%s",(new File(src).getAbsoluteFile()),dst,ip));
             channelSftp.disconnect();
         } catch (JSchException e){

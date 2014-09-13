@@ -27,7 +27,7 @@ class FileTransferProgressMonitor implements SftpProgressMonitor{
      */
     @Override
     public boolean count(long count) {
-        System.out.printf("\rAll Servers is Transferring,Please Wait moment ... %s",
+        System.out.printf("\rAll Servers are Transferring,Please Wait moment ... %s",
                 str.charAt((int)(Math.random()*str.length())));
         return true;
     }
