@@ -34,7 +34,8 @@ class GetIPInfoFromExcel extends GetIPInfoFromFile{
                     host_info.add(cell_content);
                 }
                 ServerInfo serverInfo = new ServerInfo(host_info.get(0),host_info.get(1),
-                        EncryptDecryptPassword.Encrypt(host_info.get(2)),EncryptDecryptPassword.Encrypt(host_info.get(3)),
+                        EncryptDecryptPassword.Encrypt(host_info.get(2)),
+                        EncryptDecryptPassword.Encrypt(host_info.get(3)),
                         Integer.parseInt(host_info.get(4)));
                 objects.add(serverInfo);
                 host_info.clear();

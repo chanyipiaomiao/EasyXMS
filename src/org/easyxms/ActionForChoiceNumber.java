@@ -324,7 +324,7 @@ class ActionForChoiceNumber {
 
     /**
      * 多线程上传文件
-      * @param src_file 源文件
+     * @param src_file 源文件
      * @param remote_path 目标路径
      * @param objects ServerInfo对象列表
      */

@@ -9,9 +9,7 @@ class ConnectServer{
     private ServerInfo serverInfo = null;
     private static WriteLog writeLog = null;
 
-    ConnectServer(){
-
-    }
+    ConnectServer(){}
 
     ConnectServer(ServerInfo serverInfo){
         this.serverInfo = serverInfo;
