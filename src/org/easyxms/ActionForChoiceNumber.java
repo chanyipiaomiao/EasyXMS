@@ -312,9 +312,9 @@ class ActionForChoiceNumber {
                     MultiThreadUploadFile(file,src_dst[1],objects);
                 }
             } else if (src_file.isDirectory()){
-                System.out.println("Oops.Not Support Directory!");
+                HelpPrompt.printNotSupportDirectory();
             } else {
-                System.out.printf("aOo. [ %s ] Not Exists.\n",src_file);
+                HelpPrompt.printSrcFileNotExists(file);
             }
         }
     }

@@ -267,4 +267,22 @@ class HelpPrompt {
     public static void printFileSizeAndRemotePath(String src_file,String remote_path){
         System.out.printf("File Size: %d B,Remote Path: %s\n", (new File(src_file)).length(),remote_path);
     }
+
+
+    /**
+     * 显示不支持上传目录
+     */
+    public static void printNotSupportDirectory(){
+        System.out.println("Oops.Not Support Directory!");
+
+    }
+
+
+    /**
+     * 显示要上传文件不存在
+     * @param src_file 要上传的文件
+     */
+    public static void printSrcFileNotExists(String src_file){
+        System.out.printf("aOo. [ %s ] Not Exists.\n",src_file);
+    }
 }
