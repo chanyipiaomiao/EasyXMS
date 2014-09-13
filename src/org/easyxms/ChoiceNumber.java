@@ -30,17 +30,15 @@ class ChoiceNumber {
             } else if ("2".equals(cmd)){
                 action.connectServerForSSHSFTP(serverInfoDAO,"sftp");
             } else if ("3".equals(cmd)){
-                action.listIPGroupFromDatabase(serverInfoDAO);
-            } else if ("4".equals(cmd)){
-                action.listGroupFromDatabase(serverInfoDAO);
-            } else if ("5".equals(cmd)){
-                action.deleteServerInfoFromDatabase(serverInfoDAO);
-            } else if ("6".equals(cmd)){
                 action.addServerFromCommandLine(serverInfoDAO);
-            } else if ("7".equals(cmd)){
+            } else if ("4".equals(cmd)){
                 action.addServerFromExcelFile(serverInfoDAO);
-            } else if ("8".equals(cmd)){
-                System.out.println("清屏");
+            } else if ("5".equals(cmd)){
+                action.listIPGroupFromDatabase(serverInfoDAO);
+            } else if ("6".equals(cmd)){
+                action.listGroupFromDatabase(serverInfoDAO);
+            } else if ("7".equals(cmd)){
+                action.deleteServerInfoFromDatabase(serverInfoDAO);
             }
         }
     }

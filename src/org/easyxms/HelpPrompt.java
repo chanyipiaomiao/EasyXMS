@@ -10,12 +10,12 @@ class HelpPrompt {
 
     private static String command_prompt[] = {"1    Execute  Command",
                                               "2    Upload  File",
-                                              "3    List  Servers From Database",
-                                              "4    List  Groups From Database",
-                                              "5    Delete  Server From Database",
-                                              "6    Add  Server From < Command Line >",
-                                              "7    Add  Server From < Excel File >",
-                                              "8    Clear Screen"};
+                                              "3    Add  Server From < Command Line >",
+                                              "4    Add  Server From < Excel File >",
+                                              "5    List  Servers From Database",
+                                              "6    List  Groups From Database",
+                                              "7    Delete  Server From Database",
+                                              };
 
 
     private static String program_name = "EasyXMS";
@@ -274,7 +274,6 @@ class HelpPrompt {
      */
     public static void printNotSupportDirectory(){
         System.out.println("Oops.Not Support Directory!");
-
     }
 
 
