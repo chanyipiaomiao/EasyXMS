@@ -310,6 +310,8 @@ class ActionForChoiceNumber {
                     MultiThreadUploadFile(file,"/tmp",objects);
                 } else if (src_dst_len == 2){
                     MultiThreadUploadFile(file,src_dst[1],objects);
+                } else {
+                    HelpPrompt.printParametersTooMany();
                 }
             } else if (src_file.isDirectory()){
                 HelpPrompt.printNotSupportDirectory();

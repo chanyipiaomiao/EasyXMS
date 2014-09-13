@@ -284,4 +284,12 @@ class HelpPrompt {
     public static void printSrcFileNotExists(String src_file){
         System.out.printf("aOo. [ %s ] Not Exists.\n",src_file);
     }
+
+
+    /**
+     * 显示参数过多
+     */
+    public static void printParametersTooMany(){
+        System.out.println("Parameters Too Many!!!");
+    }
 }
