@@ -76,9 +76,9 @@ class UploadFile extends ConnectServer implements TransferFile,Runnable {
             writeLog.writeFileUpload(String.format("Upload %s To %s@%s",(new File(src).getAbsoluteFile()),dst,ip));
             channelSftp.disconnect();
         } catch (JSchException e){
-            HelpPrompt.printInfo(e.getMessage());
+            HelpPrompt.printInfo(ip + " " + e.getMessage());
         } catch (SftpException e){
-            HelpPrompt.printInfo(e.getMessage());
+            HelpPrompt.printInfo(ip + " " + e.getMessage());
         }
     }
 }

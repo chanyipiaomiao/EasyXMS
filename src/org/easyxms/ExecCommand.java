@@ -110,7 +110,7 @@ class ExecCommand extends ConnectServer implements Runnable{
                 if (channelExec.getExitStatus() == 0){
                     result.append("Command execute ... OK\n");
                 } else {
-                    result.append("aOo,Not get results,Please Try Again!");
+                    result.append("aOo,Not get results,Please Try Again!\n");
                 }
             }
 

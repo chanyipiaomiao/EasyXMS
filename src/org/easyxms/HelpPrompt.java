@@ -21,7 +21,7 @@ class HelpPrompt {
     private static String program_name = "EasyXMS";
     private static String program_prompt = String.format("%s (? Help | q/Q Quit) >>> ",program_name);
     private static String welcome_prompt = String.format("" +
-            "Welcome to Use < %s > , Please Type < ? > Get Help or < q/Q > Quit",program_name);
+            "Welcome to Use < %s > , Please Enter < ? > Get Help or < q/Q > Quit",program_name);
 
 
     /**
