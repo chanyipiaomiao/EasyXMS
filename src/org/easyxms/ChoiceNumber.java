@@ -50,7 +50,7 @@ class ChoiceNumber {
      */
     public boolean setInputValue(){
         HelpPrompt.printProgramName();
-        cmd = getInput.getInputFromStandardInput();
+        cmd = getInput.getInputFromStandardInput().trim();
         if ("q".equals(cmd) || "Q".equals(cmd)){
             Quit.quit();
         }
