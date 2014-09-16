@@ -38,7 +38,9 @@ class CommandLineOptionsParser {
         options.addOption(dst_path);
         options.addOption(excel_file);
 
-        String usage = "-i IP -e COMMAND\n\t\t\t-i IP -s /local/path/to/file -d /remote/path/to/file\n";
+        String usage = "-i IP -e COMMAND\n-i IP -s /local/path/to/file -d /remote/path/to/file\n" +
+                "-g GROUP_NAME -e COMMAND\n" +
+                "-g GROUP_NAME -s /local/path/to/file -d /remote/path/to/file\n";
         String footer = "\nEasyXMS 1.0  2014-09-16  www.linux178.com  58@linux178.com";
         formatter.printHelp("start.(sh|bat) [OPTIONS]",usage+"Options:",options,footer);
     }
