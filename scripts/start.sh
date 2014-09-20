@@ -8,7 +8,7 @@ if /usr/bin/which java &>/dev/null; then
             if [[ $# == 0 ]];then
                 java -jar easyxms.jar
             else
-                java -jar easyxms.jar $*
+                java -jar easyxms.jar "$@"
             fi
     else
         echo "Java Version Not Matched,Please Install JDK/JRE 1.6+"

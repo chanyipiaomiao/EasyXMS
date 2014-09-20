@@ -42,12 +42,41 @@ class CommandLineOptionsParser {
         options.addOption(excel_file);
 
         String usage = "-i IP -e COMMAND\n-i IP -s /local/path/to/file -d /remote/path/to/file\n" +
-                "-g GROUP_NAME -e COMMAND\n" +
-                "-g GROUP_NAME -s /local/path/to/file -d /remote/path/to/file\n" +
-                "-f EXCEL_FILE -e COMMAND\n" +
-                "-f EXCEL_FILE -s /local/path/to/file -d /remote/path/to/file\n";
+                       "-g GROUP_NAME -e COMMAND\n" +
+                       "-g GROUP_NAME -s /local/path/to/file -d /remote/path/to/file\n" +
+                       "-f EXCEL_FILE -e COMMAND\n" +
+                       "-f EXCEL_FILE -s /local/path/to/file -d /remote/path/to/file\n";
         String footer = "\nEasyXMS 1.0  2014-09-16  www.linux178.com  58@linux178.com";
-        formatter.printHelp("start.(sh|bat) [OPTIONS]",usage+"Options:",options,footer);
+
+        try {
+            CommandLine cmd_line = parser.parse(options,args);
+            if (cmd_line.hasOption("i") && cmd_line.hasOption("e")){
+                System.out.println(cmd_line.getOptionValue("i"));
+                System.out.println(cmd_line.getOptionValue("e"));
+            } else if (cmd_line.hasOption("i") && cmd_line.hasOption("s") && cmd_line.hasOption("d")){
+                System.out.println(cmd_line.getOptionValue("i"));
+                System.out.println(cmd_line.getOptionValue("s"));
+                System.out.println(cmd_line.getOptionValue("d"));
+            } else if (cmd_line.hasOption("g") && cmd_line.hasOption("e")){
+                System.out.println(cmd_line.getOptionValue("g"));
+                System.out.println(cmd_line.getOptionValue("e"));
+            } else if (cmd_line.hasOption("g") && cmd_line.hasOption("s") && cmd_line.hasOption("d")){
+                System.out.println(cmd_line.getOptionValue("g"));
+                System.out.println(cmd_line.getOptionValue("s"));
+                System.out.println(cmd_line.getOptionValue("d"));
+            } else if (cmd_line.hasOption("f") && cmd_line.hasOption("e")){
+                System.out.println(cmd_line.getOptionValue("f"));
+                System.out.println(cmd_line.getOptionValue("e"));
+            } else if (cmd_line.hasOption("f") && cmd_line.hasOption("s") && cmd_line.hasOption("d")){
+                System.out.println(cmd_line.getOptionValue("f"));
+                System.out.println(cmd_line.getOptionValue("s"));
+                System.out.println(cmd_line.getOptionValue("d"));
+            }
+        } catch (ParseException e) {
+            System.err.println( "Parsing failed.Reason: " + e.getMessage());
+        }
+
+//        formatter.printHelp("start.(sh|bat) [OPTIONS]",usage+"Options:",options,footer);
     }
 
 }
