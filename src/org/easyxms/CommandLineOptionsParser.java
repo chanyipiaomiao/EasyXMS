@@ -13,6 +13,8 @@ class CommandLineOptionsParser {
         Options options = new Options();
         HelpFormatter formatter = new HelpFormatter();
 
+        Option help = new Option("h","help",false,"Print Help Info");
+
         Option ip = new Option("i","ip",true,"IP Address");
         ip.setArgName("IP Address");
 
@@ -31,6 +33,7 @@ class CommandLineOptionsParser {
         Option excel_file = new Option("f","excel",true,"IP Information Excel File");
         excel_file.setArgName("IP Information Excel File");
 
+        options.addOption(help);
         options.addOption(ip);
         options.addOption(command);
         options.addOption(group_name);
@@ -40,7 +43,9 @@ class CommandLineOptionsParser {
 
         String usage = "-i IP -e COMMAND\n-i IP -s /local/path/to/file -d /remote/path/to/file\n" +
                 "-g GROUP_NAME -e COMMAND\n" +
-                "-g GROUP_NAME -s /local/path/to/file -d /remote/path/to/file\n";
+                "-g GROUP_NAME -s /local/path/to/file -d /remote/path/to/file\n" +
+                "-f EXCEL_FILE -e COMMAND\n" +
+                "-f EXCEL_FILE -s /local/path/to/file -d /remote/path/to/file\n";
         String footer = "\nEasyXMS 1.0  2014-09-16  www.linux178.com  58@linux178.com";
         formatter.printHelp("start.(sh|bat) [OPTIONS]",usage+"Options:",options,footer);
     }
