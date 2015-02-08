@@ -84,6 +84,10 @@ IP地址、分组、用户名、密码和端口，添加到程序的数据库中
 
 ![添加IP](demo/addhostxls.gif)
 
+Excel文件的模板
+
+![添加IP](demo/excel.png)
+
 ### 2.删除IP信息
 
 ![删除IP信息](demo/delhost.gif)
