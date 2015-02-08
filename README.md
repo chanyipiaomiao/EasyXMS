@@ -20,6 +20,7 @@ EasyXMS
 
         1.在sshd配置文件/etc/ssh/sshd_config中 UseDNS yes 修改为 UseDNS no,可以确保连接顺畅
         2.像执行时间过长的命令,如top、yum这类命令不适合执行
+        3.进入到项目的目录,使用Ant来编译打包
 
 
 三、交互模式执行动作效果演示
