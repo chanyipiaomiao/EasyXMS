@@ -1,6 +1,7 @@
 package org.easyxms;
 
 
+import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.text.SimpleDateFormat;
@@ -76,5 +77,27 @@ class FunctionKit {
     public static String getDate(String dateformat){
         SimpleDateFormat dateFormat = new SimpleDateFormat(dateformat);
         return dateFormat.format(new Date());
+    }
+
+
+    /**
+     * 如果目录不存在则创建
+     * @param dirname 创建目录的名称
+     * @return true 已经创建目录 false 没有创建目录
+     */
+    public static boolean createDirectoryIfNotExist(String dirname){
+        File dir = new File(dirname);
+        return dir.mkdir();
+    }
+
+
+    /**
+     * 检测文件是否存在
+     * @param filename 文件名称字符串
+     * @return 文件是否存在
+     */
+    public static boolean checkFileIsExists(String filename){
+        File file = new File(filename);
+        return file.exists();
     }
 }

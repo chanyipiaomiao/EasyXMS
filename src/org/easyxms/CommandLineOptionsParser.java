@@ -4,7 +4,9 @@ package org.easyxms;
 import org.apache.commons.cli.*;
 
 
-
+/**
+ * 解析命令行参数
+ */
 class CommandLineOptionsParser {
 
     public static void optionArgsParser(String[] args){
@@ -41,42 +43,49 @@ class CommandLineOptionsParser {
         options.addOption(dst_path);
         options.addOption(excel_file);
 
-        String usage = "-i IP -e COMMAND\n-i IP -s /local/path/to/file -d /remote/path/to/file\n" +
+        String usage = "-i IP -e COMMAND\n" +
+                       "-i IP -s /local/path/to/file -d /remote/path/to/file\n" +
                        "-g GROUP_NAME -e COMMAND\n" +
                        "-g GROUP_NAME -s /local/path/to/file -d /remote/path/to/file\n" +
                        "-f EXCEL_FILE -e COMMAND\n" +
                        "-f EXCEL_FILE -s /local/path/to/file -d /remote/path/to/file\n";
-        String footer = "\nEasyXMS 1.0  2014-09-16  www.linux178.com  58@linux178.com";
+        String footer = "\nEasyXMS 2015-02-03  www.linux178.com  58@linux178.com";
 
         try {
             CommandLine cmd_line = parser.parse(options,args);
+            CommandLineAction commandLineAction = new CommandLineAction();
             if (cmd_line.hasOption("i") && cmd_line.hasOption("e")){
-                System.out.println(cmd_line.getOptionValue("i"));
-                System.out.println(cmd_line.getOptionValue("e"));
+                String i_value = cmd_line.getOptionValue("i");
+                String e_value = cmd_line.getOptionValue("e");
+                commandLineAction.ipExecCommand(i_value,e_value);
             } else if (cmd_line.hasOption("i") && cmd_line.hasOption("s") && cmd_line.hasOption("d")){
-                System.out.println(cmd_line.getOptionValue("i"));
-                System.out.println(cmd_line.getOptionValue("s"));
-                System.out.println(cmd_line.getOptionValue("d"));
+                String i_value = cmd_line.getOptionValue("i");
+                String s_value = cmd_line.getOptionValue("s");
+                String d_value = cmd_line.getOptionValue("d");
+                commandLineAction.ipUpload(i_value,s_value,d_value);
             } else if (cmd_line.hasOption("g") && cmd_line.hasOption("e")){
-                System.out.println(cmd_line.getOptionValue("g"));
-                System.out.println(cmd_line.getOptionValue("e"));
+                String g_value = cmd_line.getOptionValue("g");
+                String e_value = cmd_line.getOptionValue("e");
+                commandLineAction.groupExecCommand(g_value,e_value);
             } else if (cmd_line.hasOption("g") && cmd_line.hasOption("s") && cmd_line.hasOption("d")){
-                System.out.println(cmd_line.getOptionValue("g"));
-                System.out.println(cmd_line.getOptionValue("s"));
-                System.out.println(cmd_line.getOptionValue("d"));
+                String g_value = cmd_line.getOptionValue("g");
+                String s_value = cmd_line.getOptionValue("s");
+                String d_value = cmd_line.getOptionValue("d");
+                commandLineAction.groupUpload(g_value,s_value,d_value);
             } else if (cmd_line.hasOption("f") && cmd_line.hasOption("e")){
-                System.out.println(cmd_line.getOptionValue("f"));
-                System.out.println(cmd_line.getOptionValue("e"));
+                String f_value = cmd_line.getOptionValue("f");
+                String e_value = cmd_line.getOptionValue("e");
+                commandLineAction.fileExecCommand(f_value,e_value);
             } else if (cmd_line.hasOption("f") && cmd_line.hasOption("s") && cmd_line.hasOption("d")){
-                System.out.println(cmd_line.getOptionValue("f"));
-                System.out.println(cmd_line.getOptionValue("s"));
-                System.out.println(cmd_line.getOptionValue("d"));
+                String f_value = cmd_line.getOptionValue("f");
+                String s_value = cmd_line.getOptionValue("s");
+                String d_value = cmd_line.getOptionValue("d");
+                commandLineAction.fileUpload(f_value,s_value,d_value);
+            } else {
+                formatter.printHelp("start.(sh|bat) [OPTIONS]",usage+"Options:",options,footer);
             }
         } catch (ParseException e) {
-            System.err.println( "Parsing failed.Reason: " + e.getMessage());
+            HelpPrompt.printInfo("Parsing failed.Reason: " + e.getMessage());
         }
-
-//        formatter.printHelp("start.(sh|bat) [OPTIONS]",usage+"Options:",options,footer);
     }
-
 }

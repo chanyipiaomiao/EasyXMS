@@ -292,4 +292,14 @@ class HelpPrompt {
     public static void printParametersTooMany(){
         System.out.println("Parameters Too Many!!!");
     }
+
+
+    /**
+     * 显示不是IP地址
+     * @param ip IP地址
+     */
+    public static void printIsNotIP(String ip){
+        System.out.printf("aOo. [ %s ] Not Exists.\n",ip);
+    }
+
 }

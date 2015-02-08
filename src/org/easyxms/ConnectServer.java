@@ -6,25 +6,12 @@ import com.jcraft.jsch.*;
 
 class ConnectServer{
 
-    private ServerInfo serverInfo = null;
-    private static WriteLog writeLog = null;
-
-    ConnectServer(){}
-
-    ConnectServer(ServerInfo serverInfo){
-        this.serverInfo = serverInfo;
-    }
-
-    public static void setWriteLog(WriteLog writeLog) {
-        ConnectServer.writeLog = writeLog;
-    }
-
 
     /**
      * 连接服务器打开会话
      * @return 连接会话对象
      */
-    public Session connectServerOpenSession(){
+    public Session connectServerOpenSession(ServerInfo serverInfo,WriteLog writeLog){
         JSch jSch = new JSch();
         Session session = null;
         String ip = serverInfo.getIp();

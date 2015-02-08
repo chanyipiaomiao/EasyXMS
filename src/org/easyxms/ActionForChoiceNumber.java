@@ -228,13 +228,11 @@ class ActionForChoiceNumber {
                     if ("ssh".equals(ssh_sftp)){
                         SessionPool.setSsh_connection_pool(new HashMap<String, Session>());
                         ExecCommand.setWriteLog(writeLog);
-                        ConnectServer.setWriteLog(writeLog);
-                        loopGetCommandForExec(writeLog,objects);
+                        loopGetCommandFromInteractiveForExec(writeLog,objects);
                     } else {
                         SessionPool.setSftp_connection_pool(new HashMap<String, Session>());
                         UploadFile.setWriteLog(writeLog);
-                        ConnectServer.setWriteLog(writeLog);
-                        uploadFile(objects);
+                        uploadFileFromInteractive(objects);
                     }
                 }
             }
@@ -243,11 +241,11 @@ class ActionForChoiceNumber {
 
 
     /**
-     * 循环从命令行获取命令用于执行
+     * 循环从交互的命令行获取命令用于执行
      * @param writeLog 用来写日志的对象
      * @param objects ServerInfo对象列表
      */
-    void loopGetCommandForExec(WriteLog writeLog,List<ServerInfo> objects){
+    void loopGetCommandFromInteractiveForExec(WriteLog writeLog,List<ServerInfo> objects){
         HelpPrompt.printAskExecCommand();
         String command = getInputContent();
         if (! FunctionKit.checkStringLengthIsZero(command)) {
@@ -286,16 +284,16 @@ class ActionForChoiceNumber {
             }
 
             //递归调用自身获取命令执行
-            loopGetCommandForExec(writeLog,objects);
+            loopGetCommandFromInteractiveForExec(writeLog,objects);
         }
     }
 
 
     /**
-     * 上传文件
+     * 交互的模式下上传文件
      * @param objects ServerInfo对象列表
      */
-    void uploadFile(List<ServerInfo> objects){
+    void uploadFileFromInteractive(List<ServerInfo> objects){
         HelpPrompt.printFilePath();
         String file_info = getInputContent();
         if (! FunctionKit.checkStringLengthIsZero(file_info)){

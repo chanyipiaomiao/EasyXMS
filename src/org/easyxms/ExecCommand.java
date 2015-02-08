@@ -21,6 +21,7 @@ class ExecCommand extends ConnectServer implements Runnable{
     private Session session = null;
     private static int is_use_session_pool = 0;  //是否使用session会话池
     private static WriteLog writeLog = null;
+    private ServerInfo serverInfo = null;
 
     ExecCommand(String ip,Session session) {
         this.ip = ip;
@@ -28,7 +29,7 @@ class ExecCommand extends ConnectServer implements Runnable{
     }
 
     ExecCommand(ServerInfo serverInfo) {
-        super(serverInfo);
+        this.serverInfo = serverInfo;
         this.ip = serverInfo.getIp();
     }
 
@@ -67,7 +68,7 @@ class ExecCommand extends ConnectServer implements Runnable{
      * 打开执行命令通道
      */
     public void openExecCommandChannel(){
-        Session session = super.connectServerOpenSession();
+        Session session = connectServerOpenSession(serverInfo,writeLog);
         if (session.isConnected()){
             //把session会话放到 session连接池中，以备下一次使用
             SessionPool.getSsh_connection_pool().put(ip,session);

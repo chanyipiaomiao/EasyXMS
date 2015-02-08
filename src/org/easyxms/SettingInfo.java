@@ -15,7 +15,7 @@ class SettingInfo {
     private static int enable_http_proxy = 0;
     private static String http_proxy_server = null;
     private static int http_proxy_port = 80;
-    private static int connect_timeout = 3000;
+    private static int connect_timeout = 2000;
     private static int sleep_time = 300;
 
     /**
